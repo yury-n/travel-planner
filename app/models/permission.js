@@ -1,7 +1,7 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-var permissionSchema = new Schema({
+const permissionSchema = new Schema({
   role: {
     type: String,
     enum: ['regular', 'admin', 'superadmin']
@@ -12,9 +12,9 @@ var permissionSchema = new Schema({
   }
 });
 
-permissionSchema.statics.isActionPermitted = function(role, action, callback) {
-  this.findOne({role: role, action: action}, function(err, doc){
-    if(err) {
+permissionSchema.statics.isActionPermitted = (role, action, callback) => {
+  this.findOne({role: role, action: action}, (err, doc) => {
+    if (err) {
       return callback(err, false);
     }
     callback(null, doc !== null);

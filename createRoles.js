@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var config = require('config');
-var Permission = require('./models/permission');
+var Permission = require('./app/models/permission');
 
 mongoose.connect(config.db.host);
 
