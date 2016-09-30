@@ -1,5 +1,5 @@
 {
   "db": {
-    "host": "YOUR_TEST_DB_URI"
+    "host": "mongodb://localhost:27017/travel-planner"
   }
 }

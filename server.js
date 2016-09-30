@@ -1,13 +1,16 @@
-"use strict";
+var express = require('express');
+var bodyParser = require('body-parser');
 
-let express = require('express');
-let bodyParser = require('body-parser');
+var app = express();
+var port = 3000;
 
-let app = express();
-let port = 8080;
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
 
+// INDEX
 app.get('/', (req, res) => res.json({message: "Welcome!"}));
 
+// API
 var router = express.Router();
 router.get('/', function(req, res) {
     res.json({ message: 'hooray! welcome to our api!' });
