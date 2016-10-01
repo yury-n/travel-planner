@@ -13,7 +13,8 @@
     "lodash": "^4.16.2",
     "mongodb": "^2.2.10",
     "mongoose": "^4.4.15",
-    "morgan": "^1.7.0"
+    "morgan": "^1.7.0",
+    "password-hash": "^1.2.2"
   },
   "devDependencies": {
     "chai": "^3.5.0",

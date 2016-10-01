@@ -1,11 +1,13 @@
 process.env.NODE_ENV = 'test';
 
+const passwordHash = require('password-hash');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const server = require('../server');
 const should = chai.should();
 chai.use(chaiHttp);
 
+const validatePublicUserObject = require('./utils/validatePublicUserObject');
 const User = require('../app/models/user');
 
 describe('Users', () => {
@@ -15,6 +17,86 @@ describe('Users', () => {
            done();
         });
     });
+
+    describe('/POST /api/authenticate', () => {
+      it('should return an error if username is not found', (done) => {
+        chai.request(server)
+            .post('/api/users/authenticate')
+            .send({
+              name: 'Iamtotallymissing',
+              password: '333'
+            })
+            .end((err, res) => {
+              res.should.have.status(401);
+              res.body.should.have.property('message').eql('Authentication failed. User not found.');
+              done();
+            });
+      });
+      it('should return an error if password is wrong', (done) => {
+        User.create([{
+          name: 'Augusto',
+          password: passwordHash.generate('333'),
+          role: 'regular'
+        }]);
+        chai.request(server)
+            .post('/api/users/authenticate')
+            .send({
+              name: 'Augusto',
+              password: '111'
+            })
+            .end((err, res) => {
+              res.should.have.status(401);
+              res.body.should.have.property('message').eql('Authentication failed. Wrong password.');
+              done();
+            });
+      });
+      it('should perform authentication', (done) => {
+        User.create([{
+          name: 'Pedro',
+          password: passwordHash.generate('333'),
+          role: 'regular'
+        }]);
+        chai.request(server)
+            .post('/api/users/authenticate')
+            .send({
+              name: 'Pedro',
+              password: '333'
+            })
+            .end((err, res) => {
+              res.should.have.status(200);
+              res.body.should.have.property('authtoken');
+              res.body.should.have.property('user');
+              validatePublicUserObject(res.body.user);
+              done();
+            });
+      });
+      it('should return an error on missing name', (done) => {
+        chai.request(server)
+            .post('/api/users/authenticate')
+            .send({
+              password: '123'
+            })
+            .end((err, res) => {
+              res.should.have.status(400);
+              res.body.should.have.property('message').eql('Missing name.');
+              done();
+            });
+      });
+      it('should return an error on missing password', (done) => {
+        chai.request(server)
+            .post('/api/users/authenticate')
+            .send({
+              name: 'Kate'
+            })
+            .end((err, res) => {
+              res.should.have.status(400);
+              res.body.should.have.property('message').eql('Missing password.');
+              done();
+            });
+      });
+    });
+
+    return;
 
     describe('/GET /api/users', () => {
       it('should return a list of users', (done) => {
@@ -28,11 +110,8 @@ describe('Users', () => {
                 res.should.have.status(200);
                 res.body.should.be.a('array');
                 res.body.length.should.be.eql(2);
-                res.body[0].should.be.a('object');
-                res.body[0].should.have.property('_id');
-                res.body[0].should.have.property('name');
-                res.body[0].should.have.property('role');
-                Object.keys(res.body[0]).length.should.be.eql(3);
+                validatePublicUserObject(res.body[0]);
+                validatePublicUserObject(res.body[1]);
                 done();
               });
         });
@@ -64,8 +143,54 @@ describe('Users', () => {
               res.body.user.should.have.property('_id');
               res.body.user.should.have.property('name');
               res.body.user.should.have.property('role');
+              User.find(res.body.user, (err, doc) => {
+                doc.should.be.a('array');
+                doc.length.should.be.eql(1);
+                passwordHash.verify('123', doc[0].password);
+                done();
+              });
+            });
+      });
+      it('should not create a new user without name', (done) => {
+        chai.request(server)
+            .post('/api/users')
+            .send({
+              password: '123'
+            })
+            .end((err, res) => {
+              res.should.have.status(400);
+              res.body.should.have.property('message').eql('Missing name.');
               done();
             });
+      });
+      it('should not create a new user without password', (done) => {
+        chai.request(server)
+            .post('/api/users')
+            .send({
+              name: 'Peter'
+            })
+            .end((err, res) => {
+              res.should.have.status(400);
+              res.body.should.have.property('message').eql('Missing password.');
+              done();
+            });
+      });
+      it('should not create a new user if requested name is taken', (done) => {
+        User.create([
+          {name: 'Keith', password: '123', 'role': 'regular'}
+        ]).then(() => {
+          chai.request(server)
+              .post('/api/users')
+              .send({
+                name: 'Keith',
+                password: '333'
+              })
+              .end((err, res) => {
+                res.should.have.status(400);
+                res.body.should.have.property('message').eql('Requested name is taken.');
+                done();
+              });
+        });
       });
     });
 
