@@ -7,7 +7,7 @@ const endWithServerError = require('../utils/endWithServerError');
 const User = require('../models/user');
 
 exports.getUsers = (req, res) => {
-  const query = User.find({}).select('name role')
+  const query = User.find({}).select('name role');
   query.exec((err, users) => {
     res.json(users);
   });
@@ -48,7 +48,7 @@ exports.authenticateUser = (req, res) => {
   if (!validateRequiredFields(req, res, ['name', 'password'])) {
     return;
   }
-  User.findOne({name: req.body.name}, (err, user) => {
+  User.findOne({name: req.body.name}, 'name role', (err, user) => {
     if (err) {
       return endWithServerError(res, 'DB failure.');
     }
@@ -63,9 +63,11 @@ exports.authenticateUser = (req, res) => {
       return;
     }
     const authtoken = jwt.sign(
-      user, config.appSecretKey,
+      user,
+      config.appSecretKey,
       {expiresIn: '24 hours'}
     );
+
     res.json({
       authtoken: authtoken,
       user: object.pick(user, ['_id', 'name', 'role'])

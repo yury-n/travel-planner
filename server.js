@@ -4,6 +4,9 @@ const mongoose = require('./mongoose');
 const usersRoutes = require('./app/routes/users');
 const travelsRoutes = require('./app/routes/travels');
 const myTravelsRoutes = require('./app/routes/my/travels');
+const authorizeTo = require('./app/middlewares/authorizeTo');
+const authenticateFromToken = require('./app/middlewares/authenticateFromToken');
+const url = require('url');
 
 const app = express();
 const port = 3000;
@@ -14,12 +17,15 @@ app.use(bodyParser.json());
 app.get('/', (req, res) => res.json({message: "Welcome!"}));
 
 const apiRouter = express.Router();
-apiRouter.get('/', function(req, res) {
-    res.json({ message: 'hooray! welcome to our api!' });
+apiRouter.all('*', (req, res, next) => {
+  if (url.parse(req.url).pathname == '/users/authenticate') {
+    usersRoutes.authenticateUser(req, res, next);
+  } else {
+    authenticateFromToken(req, res, next);
+  }
 });
 apiRouter.get('/users', usersRoutes.getUsers);
 apiRouter.post('/users', usersRoutes.registerUser);
-apiRouter.post('/users/authenticate', usersRoutes.authenticateUser);
 /*
 apiRouter.get('/travels', travelsRoutes.getTravels);
 apiRouter.post('/travels', travelsRoutes.createTravel);
