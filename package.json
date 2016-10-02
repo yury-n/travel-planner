@@ -13,7 +13,6 @@
     "lodash": "^4.16.2",
     "mongodb": "^2.2.10",
     "mongoose": "^4.4.15",
-    "morgan": "^1.7.0",
     "password-hash": "^1.2.2"
   },
   "devDependencies": {
@@ -24,6 +23,6 @@
   },
   "scripts": {
     "start": "set NODE_ENV=dev && node server.js",
-    "test": "mocha"
+    "test": "set NODE_ENV=test && mocha"
   }
 }

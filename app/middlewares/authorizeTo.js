@@ -4,8 +4,6 @@ const endWithServerError = require('../utils/endWithServerError');
 module.exports = (action) => {
   return (req, res, next) => {
 
-    return next();
-
     if (!req.authenticatedUser) {
       res.status(403);
       res.json({message: 'No authenticated user.'});
@@ -18,7 +16,8 @@ module.exports = (action) => {
       }
       if (!isPermitted) {
         res.status(403);
-        return res.json({message: 'Action is not permitted.'});
+        res.json({message: 'Action is not permitted.'});
+        return next();
       }
       next();
     });

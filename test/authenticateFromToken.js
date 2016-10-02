@@ -1,5 +1,4 @@
 process.env.NODE_ENV = 'test';
-
 const jwt = require('jsonwebtoken');
 const config = require('config');
 const sinon = require('sinon');

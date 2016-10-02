@@ -1,26 +1,39 @@
+process.env.NODE_ENV = 'test';
+
 const passwordHash = require('password-hash');
 const mongoose = require('./mongoose');
 const config = require('config');
 const User = require('./app/models/user');
 const Permission = require('./app/models/permission');
 
-(() => {
-  // User.remove({}, process.exit); return;
-  // Permission.remove({}, process.exit); return;
-
-  User.create([
+function createRootUser() {
+  return User.create([
     {name: 'root', password: passwordHash.generate('password'), role: 'superadmin'}
-  ]).then(() =>
-    Permission.create([
-      {role: 'regular', action: 'manageOwnTravels'},
+  ]);
+}
 
-      {role: 'admin', action: 'manageUsers'},
-      {role: 'admin', action: 'manageOwnTravels'},
+function createPermissions() {
+  return Permission.create([
+    {role: 'regular', action: 'manageOwnTravels'},
 
-      {role: 'superadmin', action: 'manageUsers'},
-      {role: 'superadmin', action: 'manageAnyTravels'},
+    {role: 'admin', action: 'manageUsers'},
+    {role: 'admin', action: 'manageOwnTravels'},
 
-    ]).then(process.exit)
-  );
+    {role: 'superadmin', action: 'manageUsers'},
+    {role: 'superadmin', action: 'manageAnyTravels'},
+  ]);
+}
 
-})();
+function deleteAllUsers() {
+  return User.remove({});
+}
+
+function deleteAllPermissions() {
+  return Permission.remove({});
+}
+
+deleteAllUsers()
+  .then(createRootUser)
+  .then(deleteAllPermissions)
+  .then(createPermissions)
+  .then(process.exit);

@@ -2,19 +2,32 @@ const object = require('lodash/object');
 const passwordHash = require('password-hash');
 const jwt = require('jsonwebtoken');
 const config = require('config');
-const validateRequiredFields = require('../utils/validateRequiredFields');
+const validatePresenceOfFields = require('../utils/validatePresenceOfFields');
 const endWithServerError = require('../utils/endWithServerError');
 const User = require('../models/user');
 
 exports.getUsers = (req, res) => {
   const query = User.find({}).select('name role');
   query.exec((err, users) => {
+    if (err) {
+      return endWithServerError(res, 'DB failure.');
+    }
     res.json(users);
   });
 };
 
-exports.registerUser = (req, res) => {
-  if (!validateRequiredFields(req, res, ['name', 'password'])) {
+exports.getUser = (req, res) => {
+  const query = User.findById(req.params.id).select('name role');
+  query.exec((err, user) => {
+    if (err) {
+      return endWithServerError(res, 'DB failure.');
+    }
+    res.json(user);
+  });
+};
+
+exports.createUser = (req, res) => {
+  if (!validatePresenceOfFields(req, res, ['name', 'password'], 'all')) {
     return;
   }
   const name = req.body.name;
@@ -44,11 +57,47 @@ exports.registerUser = (req, res) => {
 
 };
 
-exports.authenticateUser = (req, res) => {
-  if (!validateRequiredFields(req, res, ['name', 'password'])) {
+exports.deleteUser = (req, res) => {
+  User.remove({_id: req.params.id}, (err) => {
+    if (err) {
+      return endWithServerError(res, 'DB failure.');
+    }
+    res.json({message: 'User successfully deleted!'});
+  });
+};
+
+exports.updateUser = (req, res) => {
+  if (!validatePresenceOfFields(req, res, ['name', 'role', 'password'], 'any')) {
     return;
   }
-  User.findOne({name: req.body.name}, 'name role', (err, user) => {
+  User.findById(req.params.id, 'name, role, password', (err, user) => {
+    if (err) {
+      return endWithServerError(res, 'DB failure.');
+    }
+    const updates = {};
+    if (req.body.name) {
+      updates['name'] = req.body.name;
+    }
+    if (req.body.role) {
+      updates['role'] = req.body.role;
+    }
+    if (req.body.password) {
+      updates['password'] = passwordHash.generate(req.body.password);
+    }
+    Object.assign(user, updates).save((err, book) => {
+      if (err) {
+        return endWithServerError(res, 'DB failure.');
+      }
+			res.json({message: 'User successfully updated!'});
+		});
+  });
+};
+
+exports.authenticateUser = (req, res) => {
+  if (!validatePresenceOfFields(req, res, ['name', 'password'], 'all')) {
+    return;
+  }
+  User.findOne({name: req.body.name}, 'name role password', (err, user) => {
     if (err) {
       return endWithServerError(res, 'DB failure.');
     }
@@ -62,15 +111,16 @@ exports.authenticateUser = (req, res) => {
       res.json({message: 'Authentication failed. Wrong password.'});
       return;
     }
+    const publicUserInfo = object.pick(user, ['_id', 'name', 'role']);
     const authtoken = jwt.sign(
-      user,
+      publicUserInfo,
       config.appSecretKey,
       {expiresIn: '24 hours'}
     );
 
     res.json({
       authtoken: authtoken,
-      user: object.pick(user, ['_id', 'name', 'role'])
+      user: publicUserInfo
     });
   });
 };

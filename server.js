@@ -24,17 +24,27 @@ apiRouter.all('*', (req, res, next) => {
     authenticateFromToken(req, res, next);
   }
 });
-apiRouter.get('/users', usersRoutes.getUsers);
-apiRouter.post('/users', usersRoutes.registerUser);
-/*
-apiRouter.get('/travels', travelsRoutes.getTravels);
-apiRouter.post('/travels', travelsRoutes.createTravel);
-*/
+const apiUsersRouter = express.Router();
+//apiUsersRouter.use(authorizeTo('manageUsers'));
+apiUsersRouter.get('/', usersRoutes.getUsers);
+apiUsersRouter.post('/', usersRoutes.createUser);
+apiUsersRouter.get('/:id', usersRoutes.getUser);
+apiUsersRouter.put('/:id', usersRoutes.updateUser);
+apiUsersRouter.delete('/:id', usersRoutes.deleteUser);
+
 const apiMyTravelsRouter = express.Router();
 apiMyTravelsRouter.use(authorizeTo('manageOwnTravels'));
 apiMyTravelsRouter.get('/', myTravelsRoutes.getMyTravels);
 apiMyTravelsRouter.post('/', myTravelsRoutes.createMyTravel);
-apiRouter.get('/my/travels', apiMyTravelsRouter);
+
+apiRouter.use('/users', apiUsersRouter);
+apiRouter.use('/my/travels', apiMyTravelsRouter);
+
+
+/*
+apiRouter.get('/travels', travelsRoutes.getTravels);
+apiRouter.post('/travels', travelsRoutes.createTravel);
+*/
 
 app.use('/api', apiRouter);
 

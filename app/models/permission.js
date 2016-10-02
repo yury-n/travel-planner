@@ -12,7 +12,7 @@ const permissionSchema = new Schema({
   }
 });
 
-permissionSchema.statics.isActionPermitted = (role, action, callback) => {
+permissionSchema.statics.isActionPermitted = function(role, action, callback) {
   this.findOne({role: role, action: action}, (err, doc) => {
     if (err) {
       return callback(err, false);
