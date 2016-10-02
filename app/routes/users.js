@@ -22,7 +22,12 @@ exports.getUser = (req, res) => {
     if (err) {
       return endWithServerError(res, 'DB failure.');
     }
-    res.json(user);
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404);
+      res.json({message: 'User not found.'});
+    }
   });
 };
 

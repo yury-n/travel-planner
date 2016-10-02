@@ -17,6 +17,7 @@ app.use(bodyParser.json());
 app.get('/', (req, res) => res.json({message: "Welcome!"}));
 
 const apiRouter = express.Router();
+
 apiRouter.all('*', (req, res, next) => {
   if (url.parse(req.url).pathname == '/users/authenticate') {
     usersRoutes.authenticateUser(req, res, next);
@@ -24,6 +25,7 @@ apiRouter.all('*', (req, res, next) => {
     authenticateFromToken(req, res, next);
   }
 });
+
 const apiUsersRouter = express.Router();
 //apiUsersRouter.use(authorizeTo('manageUsers'));
 apiUsersRouter.get('/', usersRoutes.getUsers);
@@ -32,19 +34,20 @@ apiUsersRouter.get('/:id', usersRoutes.getUser);
 apiUsersRouter.put('/:id', usersRoutes.updateUser);
 apiUsersRouter.delete('/:id', usersRoutes.deleteUser);
 
+const apiTravelsRouter = express.Router();
+//apiTravelsRouter.use(authorizeTo('manageAnyTravels'));
+apiTravelsRouter.get('/', travelsRoutes.getTravels);
+apiTravelsRouter.post('/', travelsRoutes.createTravel);
+apiTravelsRouter.get('/:id', travelsRoutes.getTravel);
+
 const apiMyTravelsRouter = express.Router();
-apiMyTravelsRouter.use(authorizeTo('manageOwnTravels'));
+//apiMyTravelsRouter.use(authorizeTo('manageOwnTravels'));
 apiMyTravelsRouter.get('/', myTravelsRoutes.getMyTravels);
 apiMyTravelsRouter.post('/', myTravelsRoutes.createMyTravel);
 
 apiRouter.use('/users', apiUsersRouter);
+apiRouter.use('/travels', apiTravelsRouter);
 apiRouter.use('/my/travels', apiMyTravelsRouter);
-
-
-/*
-apiRouter.get('/travels', travelsRoutes.getTravels);
-apiRouter.post('/travels', travelsRoutes.createTravel);
-*/
 
 app.use('/api', apiRouter);
 

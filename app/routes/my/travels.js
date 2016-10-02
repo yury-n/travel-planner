@@ -1,9 +1,7 @@
-function getMyTravels(req, res) {
+exports.getMyTravels = (req, res) => {
 
-}
+};
 
-function createMyTravel(req, res) {
+exports.createMyTravel = (req, res) => {
 
-}
-
-module.exports = { getMyTravels, createMyTravel };
+};

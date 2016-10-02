@@ -2,6 +2,7 @@ process.env.NODE_ENV = 'test';
 const chai = require('chai');
 const should = chai.should();
 const chaiHttp = require('chai-http');
+const mongoose = require('mongoose');
 const server = require('../server');
 const User = require('../app/models/user');
 const validatePublicUserObject = require('./utils/validatePublicUserObject');
@@ -20,13 +21,19 @@ describe('GET /api/users/:id', () => {
           .get('/api/users/' + user.id)
           .end((err, res) => {
             res.should.have.status(200);
-            res.body.should.be.a('object');
-            res.body.should.have.property('_id').eql(user.id);
-            res.body.should.have.property('name');
-            res.body.should.have.property('role');
+            validatePublicUserObject(res.body);
             done();
           });
     });
+  });
+
+  it('should return 404 if there is no user with a given id', (done) => {
+    chai.request(server)
+        .get('/api/users/' + new mongoose.Types.ObjectId)
+        .end((err, res) => {
+          res.should.have.status(404);
+          done();
+        });
   });
 
 });

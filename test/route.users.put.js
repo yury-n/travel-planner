@@ -9,6 +9,8 @@ chai.use(chaiHttp);
 
 describe('PUT /api/users/:id', () => {
 
+  return;
+
   beforeEach(done => User.remove({}, done));
 
   it('should UPDATE a user given the id', (done) => {
