@@ -39,6 +39,8 @@ const apiTravelsRouter = express.Router();
 apiTravelsRouter.get('/', travelsRoutes.getTravels);
 apiTravelsRouter.post('/', travelsRoutes.createTravel);
 apiTravelsRouter.get('/:id', travelsRoutes.getTravel);
+apiTravelsRouter.put('/:id', travelsRoutes.updateTravel);
+apiTravelsRouter.delete('/:id', travelsRoutes.deleteTravel);
 
 const apiMyTravelsRouter = express.Router();
 //apiMyTravelsRouter.use(authorizeTo('manageOwnTravels'));

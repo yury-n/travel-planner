@@ -5,6 +5,7 @@ const should = chai.should();
 const chaiHttp = require('chai-http');
 const server = require('../server');
 const User = require('../app/models/user');
+const validatePublicUserObject = require('./utils/validatePublicUserObject');
 chai.use(chaiHttp);
 
 describe('POST /api/users', () => {
@@ -13,20 +14,21 @@ describe('POST /api/users', () => {
 
   beforeEach(done => User.remove({}, done));
 
+  const allRequiredFields = {
+    name: 'Peter',
+    password: '123'
+  };
+
   it('should create a new user', (done) => {
     chai.request(server)
         .post('/api/users')
-        .send({
-          name: 'John',
-          password: '123'
-        })
+        .send(allRequiredFields)
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.should.have.property('message').eql('Welcome, John!');
-          res.body.user.should.have.property('_id');
-          res.body.user.should.have.property('name');
-          res.body.user.should.have.property('role');
+          res.body.should.have.property('user');
+          validatePublicUserObject(res.body.user);
           User.find(res.body.user, (err, doc) => {
             doc.should.be.a('array');
             doc.length.should.be.eql(1);
@@ -35,30 +37,22 @@ describe('POST /api/users', () => {
           });
         });
   });
-  it('should not create a new user without name', (done) => {
-    chai.request(server)
-        .post('/api/users')
-        .send({
-          password: '123'
-        })
-        .end((err, res) => {
-          res.should.have.status(400);
-          res.body.should.have.property('message').eql('Missing name.');
-          done();
-        });
+
+  Object.keys(allRequiredFields).forEach(requiredField => {
+    it(`should not create a new user without ${requiredField}`, (done) => {
+      const sendFields = Object.assign({}, allRequiredFields);
+      delete sendFields[requiredField];
+      chai.request(server)
+          .post('/api/users')
+          .send(sendFields)
+          .end((err, res) => {
+            res.should.have.status(400);
+            res.body.should.have.property('message').eql(`Missing ${requiredField}.`);
+            done();
+          });
+    });
   });
-  it('should not create a new user without password', (done) => {
-    chai.request(server)
-        .post('/api/users')
-        .send({
-          name: 'Peter'
-        })
-        .end((err, res) => {
-          res.should.have.status(400);
-          res.body.should.have.property('message').eql('Missing password.');
-          done();
-        });
-  });
+
   it('should not create a new user if requested name is taken', (done) => {
     User.create([
       {name: 'Keith', password: '123', 'role': 'regular'}

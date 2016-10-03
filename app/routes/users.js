@@ -7,6 +7,7 @@ const endWithServerError = require('../utils/endWithServerError');
 const User = require('../models/user');
 
 exports.getUsers = (req, res) => {
+
   const query = User.find({}).select('name role');
   query.exec((err, users) => {
     if (err) {
@@ -17,6 +18,7 @@ exports.getUsers = (req, res) => {
 };
 
 exports.getUser = (req, res) => {
+
   const query = User.findById(req.params.id).select('name role');
   query.exec((err, user) => {
     if (err) {
@@ -32,6 +34,7 @@ exports.getUser = (req, res) => {
 };
 
 exports.createUser = (req, res) => {
+
   if (!validatePresenceOfFields(req, res, ['name', 'password'], 'all')) {
     return;
   }
@@ -63,6 +66,7 @@ exports.createUser = (req, res) => {
 };
 
 exports.deleteUser = (req, res) => {
+
   User.remove({_id: req.params.id}, (err) => {
     if (err) {
       return endWithServerError(res, 'DB failure.');
@@ -72,6 +76,7 @@ exports.deleteUser = (req, res) => {
 };
 
 exports.updateUser = (req, res) => {
+
   if (!validatePresenceOfFields(req, res, ['name', 'role', 'password'], 'any')) {
     return;
   }
@@ -99,6 +104,7 @@ exports.updateUser = (req, res) => {
 };
 
 exports.authenticateUser = (req, res) => {
+  
   if (!validatePresenceOfFields(req, res, ['name', 'password'], 'all')) {
     return;
   }
