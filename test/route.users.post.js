@@ -4,13 +4,11 @@ const chai = require('chai');
 const should = chai.should();
 const chaiHttp = require('chai-http');
 const server = require('../server');
-const User = require('../app/models/user');
+const User = require('../server/models/user');
 const validatePublicUserObject = require('./utils/validatePublicUserObject');
 chai.use(chaiHttp);
 
 describe('POST /api/users', () => {
-
-  return;
 
   beforeEach(done => User.remove({}, done));
 
@@ -26,7 +24,7 @@ describe('POST /api/users', () => {
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a('object');
-          res.body.should.have.property('message').eql('Welcome, John!');
+          res.body.should.have.property('message').eql('Welcome, Peter!');
           res.body.should.have.property('user');
           validatePublicUserObject(res.body.user);
           User.find(res.body.user, (err, doc) => {

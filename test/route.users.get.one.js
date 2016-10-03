@@ -4,13 +4,11 @@ const should = chai.should();
 const chaiHttp = require('chai-http');
 const mongoose = require('mongoose');
 const server = require('../server');
-const User = require('../app/models/user');
+const User = require('../server/models/user');
 const validatePublicUserObject = require('./utils/validatePublicUserObject');
 chai.use(chaiHttp);
 
 describe('GET /api/users/:id', () => {
-
-  return;
 
   beforeEach(done => User.remove({}, done));
 

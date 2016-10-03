@@ -4,14 +4,12 @@ const chai = require('chai');
 const should = chai.should();
 const chaiHttp = require('chai-http');
 const server = require('../server');
-const User = require('../app/models/user');
+const User = require('../server/models/user');
 const validatePublicUserObject = require('./utils/validatePublicUserObject');
-const authenticateFromToken = require('../app/middlewares/authenticateFromToken');
+const authenticateFromToken = require('../server/middlewares/authenticateFromToken');
 chai.use(chaiHttp);
 
 describe('/POST /api/authenticate', () => {
-
-  return;
 
   beforeEach(done => User.remove({}, done));
 

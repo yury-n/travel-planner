@@ -3,8 +3,8 @@ process.env.NODE_ENV = 'test';
 const passwordHash = require('password-hash');
 const mongoose = require('./mongoose');
 const config = require('config');
-const User = require('./app/models/user');
-const Permission = require('./app/models/permission');
+const User = require('./server/models/user');
+const Permission = require('./server/models/permission');
 
 function createRootUser() {
   return User.create([

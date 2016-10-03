@@ -4,13 +4,11 @@ const should = chai.should();
 const chaiHttp = require('chai-http');
 const mongoose = require('mongoose');
 const server = require('../server');
-const Travel = require('../app/models/travel');
+const Travel = require('../server/models/travel');
 const validateTravelObject = require('./utils/validateTravelObject');
 chai.use(chaiHttp);
 
 describe('GET /api/travels', () => {
-
-  return;
 
   beforeEach(done => Travel.remove({}, done));
 

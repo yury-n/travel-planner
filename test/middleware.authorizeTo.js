@@ -1,10 +1,8 @@
 process.env.NODE_ENV = 'test';
 const sinon = require('sinon');
-const authorizeTo = require('../app/middlewares/authorizeTo');
+const authorizeTo = require('../server/middlewares/authorizeTo');
 
 describe('authorizeTo middleware', () => {
-
-  return;
 
   const permissions = [
     // role, action

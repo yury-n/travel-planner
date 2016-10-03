@@ -4,11 +4,9 @@ const config = require('config');
 const sinon = require('sinon');
 const chai = require('chai');
 const should = chai.should();
-const authenticateFromToken = require('../app/middlewares/authenticateFromToken');
+const authenticateFromToken = require('../server/middlewares/authenticateFromToken');
 
 describe('authenticateFromToken middleware', () => {
-
-  return;
 
   it('should authenticate from body field', (done) => {
     const authtoken = jwt.sign(
