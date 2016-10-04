@@ -1,6 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const favicon = require('serve-favicon');
+const webpack = require('webpack');
+const webpackDevMiddleware = require('webpack-dev-middleware');
+const webpackConfig = require('./webpack.config.babel');
 const mongoose = require('./mongoose');
 const usersRoutes = require('./server/routes/users');
 const travelsRoutes = require('./server/routes/travels');
@@ -18,6 +21,12 @@ app.use(bodyParser.json());
 
 app.use('/static', express.static(__dirname + '/static'));
 app.use(favicon(__dirname + '/favicon.ico'));
+
+const compiler = webpack(webpackConfig);
+app.use(webpackDevMiddleware(compiler, {
+    noInfo: true,
+    publicPath: webpackConfig.output.publicPath
+}));
 
 app.get('*', (req, res, next) => {
   if (url.parse(req.url).pathname.indexOf('/api') === 0) {
