@@ -9,8 +9,7 @@ const NavBar = () => (
       <div className="navbar-header">
         <Link to="/"
               className="navbar-brand"
-              style={{fontFamily: "'Satisfy', cursive", fontSize: "24px"}}
-              activeStyle={{color: "#5e5e5e"}}>
+              style={{fontFamily: "'Satisfy', cursive", fontSize: "24px", color: "#5e5e5e"}}>
           Travel Planner
         </Link>
       </div>

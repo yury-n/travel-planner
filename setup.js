@@ -1,4 +1,4 @@
-process.env.NODE_ENV = 'test';
+//process.env.NODE_ENV = 'test';
 
 const passwordHash = require('password-hash');
 const mongoose = require('./mongoose');
@@ -8,7 +8,7 @@ const Permission = require('./server/models/permission');
 
 function createRootUser() {
   return User.create([
-    {name: 'root', password: passwordHash.generate('password'), role: 'superadmin'}
+    {name: 'root', password: passwordHash.generate('pass'), role: 'superadmin'}
   ]);
 }
 

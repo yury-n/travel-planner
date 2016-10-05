@@ -104,7 +104,7 @@ exports.updateUser = (req, res) => {
 };
 
 exports.authenticateUser = (req, res) => {
-  
+
   if (!validatePresenceOfFields(req, res, ['name', 'password'], 'all')) {
     return;
   }
@@ -130,6 +130,7 @@ exports.authenticateUser = (req, res) => {
     );
 
     res.json({
+      message: 'Welcome back, ' + user.name + '!',
       authtoken: authtoken,
       user: publicUserInfo
     });

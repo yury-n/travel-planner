@@ -1,25 +1,54 @@
 import fetch from 'isomorphic-fetch';
 
 export const USER_LOGIN = 'USER_LOGIN';
-export const USER_LOGIN_COMPLETED = 'USER_LOGIN_COMPLETED';
+export const USER_LOGIN_SUCCESS = 'USER_LOGIN_SUCCESS';
+export const USER_LOGIN_FAILURE = 'USER_LOGIN_FAILURE';
+export const USER_LOGOUT = 'USER_LOGOUT';
 
-const parseJSON = (response) => {
-    return response.json();
+const parseResponse = (response) => {
+  return response.json().then(data => ({
+    status: response.status,
+    data: data
+  }));
+};
+
+const postJSON = (url, params) => {
+  return fetch(url, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(params)
+  })
 };
 
 export const login = (name, password) => (dispatch) => {
-    dispatch({
-        type: USER_LOGIN
-    });
-    console.log(name);
-    console.log(password);
-    return fetch('/api/users').then(parseJSON).then(
-        response => {
-          console.log(response);
-          dispatch({
-              type: USER_LOGIN_COMPLETED,
-              response
-          });
-        }
-    ).catch(alert);
+  dispatch({
+      type: USER_LOGIN
+  });
+  return postJSON('/api/users/authenticate', {name, password})
+          .then(parseResponse).then(
+            response => {
+              if (response.status == 200) {
+                dispatch({
+                    type: USER_LOGIN_SUCCESS,
+                    message: response.data.message,
+                    user: response.data.user,
+                    token: response.data.token
+                });
+              } else {
+                dispatch({
+                    type: USER_LOGIN_FAILURE,
+                    message: response.data.message,
+                    user: null
+                });
+              }
+            }
+          ).catch(alert);
 };
+
+export const logout = () => ({
+  type: USER_LOGOUT,
+  message: ''
+});

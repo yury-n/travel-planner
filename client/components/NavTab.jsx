@@ -1,19 +1,17 @@
 import React from 'react';
-import { Link } from 'react-router';
+import { Link, withRouter } from 'react-router';
 
 const NavTab = React.createClass({
-    contextTypes: {
-        router: React.PropTypes.object
-    },
     render() {
-        var isActive = this.context.router.isActive(this.props.to, this.props.params, this.props.query);
-        var className = isActive ? 'active' : '';
-        var link = (
-            <Link {...this.props} />
-        );
-        return <li className={className}>{link}</li>;
+      const { router, params, location, routes, onClickHandler, ...rest } = this.props;
+      var isActive = router.isActive(this.props.to);
+      var className = isActive ? 'active' : '';
+      var link = (
+          <Link {...rest} />
+      );
+      return <li className={className} onClick={onClickHandler}>{link}</li>;
     }
 
 });
 
-export default NavTab;
+export default withRouter(NavTab);

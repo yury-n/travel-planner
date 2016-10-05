@@ -27,6 +27,7 @@ describe('/POST /api/authenticate', () => {
           })
           .end((err, res) => {
             res.should.have.status(200);
+            res.body.should.have.property('message').eql('Welcome back, Pedro!');
             res.body.should.have.property('authtoken');
             res.body.should.have.property('user');
             validatePublicUserObject(res.body.user);
