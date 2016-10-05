@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router';
 import NavTab from './NavTab';
+import UserBar from './UserBar';
 
 const NavBar = () => (
   <nav className="navbar navbar-default navbar-static-top">
@@ -18,10 +19,7 @@ const NavBar = () => (
           <NavTab to="/travels">Travels</NavTab>
           <NavTab to="/users">Users</NavTab>
         </ul>
-        <ul className="nav navbar-nav navbar-right">
-          <NavTab to="/login">Login</NavTab>
-          <NavTab to="/signup">Signup</NavTab>
-        </ul>
+        <UserBar />
       </div>
     </div>
   </nav>

@@ -6,22 +6,22 @@ import Signup from './Signup';
 
 const App = ({ params }) => {
 
-  let sectionComponent;
+  let content;
   switch (params.section) {
     case 'login':
-      sectionComponent = <Login />;
+      content = <Login />;
       break;
     case 'signup':
-      sectionComponent = <Signup />;
+      content = <Signup />;
       break;
     default:
-      sectionComponent = <Welcome />;
+      content = <Welcome />;
   }
 
   return (
     <div>
       <NavBar />
-      {sectionComponent}
+      {content}
     </div>
   );
 };
