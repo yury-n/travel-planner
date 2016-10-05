@@ -1,7 +1,23 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { signup } from '../actions';
 
-const Signup = () => (
-  <div className="container">
+class Signup extends Component {
+
+  render() {
+    return (
+      <div className="container">
+          {(!authentication.authenticated ? <SignupForm {...this.props} /> : null)}
+      </div>
+    );
+  }
+
+}
+
+class SignupForm extends Component {
+
+  render() {
+    return (
       <form className="form-singup" style={{maxWidth: "330px", margin: "auto"}}>
         <h2 className="form-singup-heading">Signup</h2>
         <p>
@@ -18,7 +34,9 @@ const Signup = () => (
         </p>
         <button className="btn btn-lg btn-primary btn-block" type="submit">Signup</button>
       </form>
-    </div>
-);
+    );
+  }
+
+}
 
 export default Signup;
