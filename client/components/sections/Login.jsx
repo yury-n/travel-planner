@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getAuthentication } from '../reducers';
-import { login } from '../actions';
+import { getAuthentication } from '../../reducers';
+import { login } from '../../actions';
 
 class Login extends Component {
 
@@ -9,7 +9,9 @@ class Login extends Component {
     const { authentication } = this.props;
     let message = null;
     if (authentication.message) {
-      message = <div className={"alert alert-" + (authentication.authenticated ? "success" : "warning")} role="alert">{authentication.message}</div>;
+      message = <div className={"alert alert-" + (authentication.error ? "warning" : "success")}>
+        {authentication.message}
+      </div>;
     }
     return (
       <div className="container">
@@ -28,8 +30,8 @@ class LoginForm extends Component {
       <form className="form-signin"
             style={{maxWidth: "330px", margin: "auto"}}
             onSubmit={(e) => {
-              login(this.refs.inputName.value, this.refs.inputPassword.value);
               e.preventDefault();
+              login(this.refs.inputName.value, this.refs.inputPassword.value);
             }}>
         <h2 className="form-signin-heading">Login</h2>
         <p>

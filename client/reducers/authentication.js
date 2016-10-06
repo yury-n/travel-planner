@@ -1,29 +1,44 @@
-import { USER_SIGNUP_SUCCESS, USER_SIGNUP_FAILURE } from '../actions';
+import {
+  USER_LOGIN_SUCCESS,
+  USER_LOGIN_FAILURE,
+  USER_LOGOUT,
+  USER_SIGNUP_SUCCESS
+} from '../actions';
 
-const registration = (state, action) => {
+const authentication = (state, action) => {
+
+  if (state == undefined) {
+    state = {
+      authenticated: false,
+      message: '',
+      user: null
+    };
+  }
 
   switch (action.type) {
+    case USER_LOGIN_SUCCESS:
     case USER_SIGNUP_SUCCESS: {
-      const { message } = action;
+      const { message, user, token } = action;
       return {
-        error: false,
-        message
+        authenticated: true,
+        message,
+        user,
+        token
       };
     }
-    case USER_SIGNUP_FAILURE: {
+    case USER_LOGOUT:
+    case USER_LOGIN_FAILURE: {
       const { message } = action;
       return {
-        error: true,
-        message
+        authenticated: false,
+        message: message,
+        user: null
       };
     }
     default:
-      return {
-        error: false,
-        message
-      };
+      return state;
   }
 
 };
 
-export default registration;
+export default authentication;

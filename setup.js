@@ -12,6 +12,13 @@ function createRootUser() {
   ]);
 }
 
+function createRegularUsers() {
+  return User.create([
+    {name: 'John', password: passwordHash.generate('123'), role: 'regular'},
+    {name: 'Keith', password: passwordHash.generate('321'), role: 'regular'}
+  ]);
+}
+
 function createPermissions() {
   return Permission.create([
     {role: 'regular', action: 'manageOwnTravels'},
@@ -34,6 +41,7 @@ function deleteAllPermissions() {
 
 deleteAllUsers()
   .then(createRootUser)
+  .then(createRegularUsers)
   .then(deleteAllPermissions)
   .then(createPermissions)
   .then(process.exit);

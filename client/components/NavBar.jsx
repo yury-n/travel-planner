@@ -2,22 +2,17 @@ import React from 'react';
 import { Link } from 'react-router';
 import NavTab from './NavTab';
 import UserBar from './UserBar';
+import Logo from './Logo';
+import SectionsBar from './SectionsBar';
 
 const NavBar = () => (
   <nav className="navbar navbar-default navbar-static-top">
     <div className="container">
       <div className="navbar-header">
-        <Link to="/"
-              className="navbar-brand"
-              style={{fontFamily: "'Satisfy', cursive", fontSize: "24px", color: "#5e5e5e"}}>
-          Travel Planner
-        </Link>
+        <Logo />
       </div>
       <div id="navbar" className="collapse navbar-collapse">
-        <ul className="nav navbar-nav">
-          <NavTab to="/travels">Travels</NavTab>
-          <NavTab to="/users">Users</NavTab>
-        </ul>
+        <SectionsBar />
         <UserBar />
       </div>
     </div>

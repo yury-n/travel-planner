@@ -35,11 +35,18 @@ exports.getUser = (req, res) => {
 
 exports.createUser = (req, res) => {
 
-  if (!validatePresenceOfFields(req, res, ['name', 'password'], 'all')) {
+  if (!validatePresenceOfFields(req, res, ['name', 'password1', 'password2'], 'all')) {
     return;
   }
   const name = req.body.name;
-  const password = req.body.password;
+  const password1 = req.body.password1;
+  const password2 = req.body.password2;
+
+  if (password1 !== password2) {
+    res.status(400);
+    res.json({message: 'Passwords don\'t match.'});
+    return;
+  }
 
   User.findOne({name: name}, (err, doc) => {
     if (doc !== null) {
@@ -49,7 +56,7 @@ exports.createUser = (req, res) => {
     }
     const newUser = new User({
       name: name,
-      password: passwordHash.generate(password),
+      password: passwordHash.generate(password1),
       role: 'regular'
     });
     newUser.save((err, user) => {
