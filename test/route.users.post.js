@@ -14,8 +14,7 @@ describe('POST /api/users', () => {
 
   const allRequiredFields = {
     name: 'Peter',
-    password1: '123',
-    password2: '123'
+    password: '123'
   };
 
   it('should create a new user', (done) => {
@@ -60,8 +59,7 @@ describe('POST /api/users', () => {
           .post('/api/users')
           .send({
             name: 'Keith',
-            password1: '333',
-            password2: '333'
+            password: '333'
           })
           .end((err, res) => {
             res.should.have.status(400);
@@ -69,18 +67,6 @@ describe('POST /api/users', () => {
             done();
           });
     });
-  });
-
-  it('should not create a new user if passwords dont match', (done) => {
-    const sendFields = Object.assign({}, allRequiredFields, {password2: '___'});
-    chai.request(server)
-        .post('/api/users')
-        .send(sendFields)
-        .end((err, res) => {
-          res.should.have.status(400);
-          res.body.should.have.property('message').eql('Passwords don\'t match.');
-          done();
-        });
   });
 
 });

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getAuthentication, getRegistration } from '../../reducers';
-import { signup } from '../../actions';
+import { signup, signupFailure } from '../../actions';
 
 class Signup extends Component {
 
@@ -9,9 +9,9 @@ class Signup extends Component {
     const { authentication, registration } = this.props;
     let message = null;
     if (registration.message) {
-      message = <div className={"alert alert-" + (registration.error ? "warning" : "success")}>
+      message = (<div className={"alert alert-" + (registration.error ? "warning" : "success")}>
         {registration.message}
-      </div>;
+      </div>);
     }
     return (
       <div className="container">
@@ -25,19 +25,30 @@ class Signup extends Component {
 
 class SignupForm extends Component {
 
+  constructor(props) {
+    super(props);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+
+    const name = this.refs.inputName.value;
+    const password1 = this.refs.inputPassword1.value;
+    const password2 = this.refs.inputPassword2.value;
+
+    if (password1 != password2) {
+      this.props.signupFailure('Passwords don\'t match.');
+      return;
+    }
+
+    this.props.signup(name, password1);
+  }
+
   render() {
-    const { signup } = this.props;
     return (
-      <form className="form-singup"
-            style={{maxWidth: "330px", margin: "auto"}}
-            onSubmit={(e) => {
-              e.preventDefault();
-              signup(
-                this.refs.inputName.value,
-                this.refs.inputPassword1.value,
-                this.refs.inputPassword2.value
-              );
-            }}>
+      <form className="form-singup" style={{maxWidth: "330px", margin: "auto"}}
+            onSubmit={this.handleSubmit}>
         <h2 className="form-singup-heading">Signup</h2>
         <p>
           <label htmlFor="inputName" className="sr-only">Name</label>
@@ -67,5 +78,5 @@ const mapStateToProps = (state, params) => {
 
 export default connect(
   mapStateToProps,
-  {signup}
+  {signup, signupFailure}
 )(Signup);

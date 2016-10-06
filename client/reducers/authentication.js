@@ -7,7 +7,7 @@ import {
 
 const authentication = (state, action) => {
 
-  if (state == undefined) {
+  if (typeof state == 'undefined') {
     state = {
       authenticated: false,
       message: '',

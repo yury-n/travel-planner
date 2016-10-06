@@ -1,3 +1,5 @@
+'use strict'
+
 const object = require('lodash/object');
 const passwordHash = require('password-hash');
 const jwt = require('jsonwebtoken');
@@ -35,17 +37,18 @@ exports.getUser = (req, res) => {
 
 exports.createUser = (req, res) => {
 
-  if (!validatePresenceOfFields(req, res, ['name', 'password1', 'password2'], 'all')) {
+  if (!validatePresenceOfFields(req, res, ['name', 'password'], 'all')) {
     return;
   }
   const name = req.body.name;
-  const password1 = req.body.password1;
-  const password2 = req.body.password2;
+  const password = req.body.password;
 
-  if (password1 !== password2) {
-    res.status(400);
-    res.json({message: 'Passwords don\'t match.'});
-    return;
+  let role = req.body.role;
+  if (!role
+        || ['regular', 'admin'].indexOf(role) === -1
+        || !req.authenticatedUser
+        || ['admin', 'superadmin'].indexOf(req.authenticatedUser.role) === -1) {
+    role = 'regular';
   }
 
   User.findOne({name: name}, (err, doc) => {
@@ -56,8 +59,8 @@ exports.createUser = (req, res) => {
     }
     const newUser = new User({
       name: name,
-      password: passwordHash.generate(password1),
-      role: 'regular'
+      password: passwordHash.generate(password),
+      role: role
     });
     newUser.save((err, user) => {
       if (err) {

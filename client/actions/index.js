@@ -8,6 +8,8 @@ export const USER_SIGNUP = 'USER_SIGNUP';
 export const USER_SIGNUP_SUCCESS = 'USER_SIGNUP_SUCCESS';
 export const USER_SIGNUP_FAILURE = 'USER_SIGNUP_FAILURE';
 export const USERS_FETCHED = 'USERS_FETCHED';
+export const USER_CREATE_SUCCESS = 'USER_CREATE_SUCCESS';
+export const USER_CREATE_FAILURE = 'USER_CREATE_FAILURE';
 
 const parseResponse = (response) => {
   return response.json().then(data => ({
@@ -42,25 +44,27 @@ export const login = (name, password) => (dispatch) => {
                   token: response.data.token
                 });
               } else {
-                dispatch({
-                  type: USER_LOGIN_FAILURE,
-                  message: response.data.message
-                });
+                dispatch(loginFailure(response.data.message));
               }
             }
           ).catch(alert);
 };
+
+export const loginFailure = (message) => ({
+  type: USER_LOGIN_FAILURE,
+  message: message
+});
 
 export const logout = () => ({
   type: USER_LOGOUT,
   message: ''
 });
 
-export const signup = (name, password1, password2) => (dispatch) => {
+export const signup = (name, password) => (dispatch) => {
   dispatch({
     type: USER_SIGNUP
   });
-  return postJSON('/api/users/', {name, password1, password2})
+  return postJSON('/api/users/', {name, password})
           .then(parseResponse).then(
             response => {
               if (response.status == 200) {
@@ -71,14 +75,16 @@ export const signup = (name, password1, password2) => (dispatch) => {
                   token: response.data.token
                 });
               } else {
-                dispatch({
-                  type: USER_SIGNUP_FAILURE,
-                  message: response.data.message
-                });
+                dispatch(signupFailure(response.data.message));
               }
             }
           ).catch(alert);
 };
+
+export const signupFailure = (message) => ({
+  type: USER_SIGNUP_FAILURE,
+  message
+});
 
 export const fetchUsers = () => (dispatch) => {
   return fetch('/api/users/').then(parseResponse).then(
@@ -88,6 +94,25 @@ export const fetchUsers = () => (dispatch) => {
         type: USERS_FETCHED,
         users: response.data
       });
+    }
+  )
+};
+
+export const createUser = (name, password, role) => (dispatch) => {
+  return postJSON('/api/users/', {name, password, role}).then(parseResponse).then(
+    response => {
+      if (response.status == 200) {
+        dispatch({
+          type: USER_CREATE_SUCCESS,
+          user: response.data.user,
+          message: 'User successfully created!'
+        });
+      } else {
+        dispatch({
+          type: USER_CREATE_FAILURE,
+          message: response.data.message
+        });
+      }
     }
   )
 };
