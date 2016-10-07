@@ -4,6 +4,8 @@ import { getUsers } from '../../reducers';
 import { fetchUsers } from '../../actions';
 import CreateUser from './Users/CreateUser';
 import UsersTable from './Users/UsersTable';
+import Message from '../Message';
+import UserDeleteModal from '../modals/UserDeleteModal';
 
 class Users extends Component {
 
@@ -12,17 +14,26 @@ class Users extends Component {
   }
 
   render() {
-    let message = null;
-    if (this.props.message) {
-      message = (<div className={"alert alert-" + (this.props.error ? "warning" : "success")}>
-        {this.props.message}
-      </div>);
+    const { message, errored, modal } = this.props;
+
+    let messageComponent = null;
+    if (message) {
+      messageComponent = <Message message={message} errored={errored} />;
     }
+
+    let modalComponent = null;
+    if (modal) {
+      if (modal.type == 'delete') {
+        modalComponent = <UserDeleteModal userid={modal.userid} name={modal.name} />;
+      }
+    }
+
     return (
       <div className="container" style={{width: "520px"}}>
-        {message}
+        {messageComponent}
         <CreateUser />
         <UsersTable users={this.props.list} />
+        {modalComponent}
       </div>
     );
   }

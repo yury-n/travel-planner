@@ -1,16 +1,19 @@
 import {
   USERS_FETCHED,
-  USER_CREATE_SUCCESS,
-  USER_CREATE_FAILURE
+  USERS_CREATE_SUCCESS,
+  USERS_CREATE_FAILURE,
+  USERS_OPEN_DELETE_MODAL,
+  CLOSE_MODAL
 } from '../actions';
 
 const users = (state, action) => {
 
   if (typeof state == 'undefined') {
       return {
-        error: false,
+        errored: false,
         message: null,
-        list: []
+        list: [],
+        modal: null
       };
   }
 
@@ -20,19 +23,33 @@ const users = (state, action) => {
         ...state,
         list: action.users
       };
-    case USER_CREATE_SUCCESS:
+    case USERS_CREATE_SUCCESS:
       return {
         ...state,
-        error: false,
+        errored: false,
         message: action.message,
         list: [...state.list, action.user]
       };
-    case USER_CREATE_FAILURE:
-        return {
-          ...state,
-          error: true,
-          message: action.message
-        };
+    case USERS_CREATE_FAILURE:
+      return {
+        ...state,
+        errored: true,
+        message: action.message
+      };
+    case USERS_OPEN_DELETE_MODAL:
+      return {
+        ...state,
+        modal: {
+          type: 'delete',
+          userid: action.userid,
+          name: action.name
+        }
+      };
+    case CLOSE_MODAL:
+      return {
+        ...state,
+        modal: null
+      };
     default:
       return state;
   }

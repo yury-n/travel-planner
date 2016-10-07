@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { openUserDeleteModal } from '../../../actions';
 
 class UsersTable extends Component {
   render() {
@@ -27,7 +29,14 @@ class UsersTable extends Component {
                 <td className="text-right">
                   <button type="button" className="btn btn-default" {...buttonOptions}>Edit</button>
                   {" "}
-                  <button type="button" className="btn btn-danger" {...buttonOptions}>Delete</button>
+                  <button type="button"
+                          className="btn btn-danger"
+                          {...buttonOptions}
+                          onClick={() => {
+                            this.props.openUserDeleteModal(user._id, user.name);
+                          }}>
+                    Delete
+                  </button>
                 </td>
               </tr>
             );
@@ -38,4 +47,7 @@ class UsersTable extends Component {
   }
 }
 
-export default UsersTable;
+export default connect(
+  null,
+  {openUserDeleteModal}
+)(UsersTable);

@@ -1,8 +1,8 @@
 import {
-  USER_LOGIN_SUCCESS,
-  USER_LOGIN_FAILURE,
-  USER_LOGOUT,
-  USER_SIGNUP_SUCCESS
+  USERS_LOGIN_SUCCESS,
+  USERS_LOGIN_FAILURE,
+  USERS_LOGOUT,
+  USERS_SIGNUP_SUCCESS
 } from '../actions';
 
 const authentication = (state, action) => {
@@ -10,33 +10,43 @@ const authentication = (state, action) => {
   if (typeof state == 'undefined') {
     state = {
       authenticated: false,
+      errored: false,
       message: '',
       user: null
     };
   }
 
   switch (action.type) {
-    case USER_LOGIN_SUCCESS:
-    case USER_SIGNUP_SUCCESS: {
+    case USERS_LOGIN_SUCCESS:
+    case USERS_SIGNUP_SUCCESS: {
       const { message, user, token } = action;
       return {
         authenticated: true,
+        errored: false,
         message,
         user,
         token
       };
     }
-    case USER_LOGOUT:
-    case USER_LOGIN_FAILURE: {
-      const { message } = action;
+    case USERS_LOGOUT: {
       return {
         authenticated: false,
-        message: message,
+        errored: false,
+        message: null,
         user: null
       };
     }
-    default:
+    case USERS_LOGIN_FAILURE: {
+      return {
+        authenticated: false,
+        errored: true,
+        message: action.message,
+        user: null
+      };
+    }
+    default: {
       return state;
+    }
   }
 
 };

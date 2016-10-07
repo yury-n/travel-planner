@@ -2,20 +2,21 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getAuthentication, getRegistration } from '../../reducers';
 import { signup, signupFailure } from '../../actions';
+import Message from '../Message';
 
 class Signup extends Component {
 
   render() {
     const { authentication, registration } = this.props;
-    let message = null;
+
+    let messageComponent = null;
     if (registration.message) {
-      message = (<div className={"alert alert-" + (registration.error ? "warning" : "success")}>
-        {registration.message}
-      </div>);
+      messageComponent = <Message message={registration.message}
+                                  errored={registration.errored} />;
     }
     return (
       <div className="container">
-        {message}
+        {messageComponent}
         {(!authentication.authenticated ? <SignupForm {...this.props} /> : null)}
       </div>
     );

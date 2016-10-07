@@ -1,26 +1,26 @@
-import { USER_SIGNUP_SUCCESS, USER_SIGNUP_FAILURE } from '../actions';
+import { USERS_SIGNUP_SUCCESS, USERS_SIGNUP_FAILURE } from '../actions';
 
 const registration = (state, action) => {
 
   if (typeof state == 'undefined') {
     return {
-      error: false,
+      errored: false,
       message: null
     };
   }
 
   switch (action.type) {
-    case USER_SIGNUP_SUCCESS: {
+    case USERS_SIGNUP_SUCCESS: {
       const { message } = action;
       return {
-        error: false,
+        errored: false,
         message
       };
     }
-    case USER_SIGNUP_FAILURE: {
+    case USERS_SIGNUP_FAILURE: {
       const { message } = action;
       return {
-        error: true,
+        errored: true,
         message
       };
     }

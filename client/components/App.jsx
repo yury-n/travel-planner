@@ -4,7 +4,7 @@ import Welcome from './sections/Welcome';
 import Login from './sections/Login';
 import Signup from './sections/Signup';
 import Users from './sections/Users';
-import Modal from './Modal';
+import Modal from './modals/Modal';
 
 const App = ({ params }) => {
 
@@ -27,7 +27,6 @@ const App = ({ params }) => {
     <div>
       <NavBar />
       {content}
-      <Modal />
     </div>
   );
 };
