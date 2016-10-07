@@ -8,7 +8,7 @@ class Login extends Component {
 
   render() {
     const { authentication } = this.props;
-    
+
     let messageComponent = null;
     if (authentication.message) {
       messageComponent = <Message message={authentication.message}
@@ -41,7 +41,7 @@ class LoginForm extends Component {
         </p>
         <p>
           <label htmlFor="inputPassword" className="sr-only">Password</label>
-          <input type="password" id="inputPassword" ref="inputPassword" name="password" className="form-control" placeholder="Password" />
+          <input type="password" id="inputPassword" ref="inputPassword" name="password" className="form-control" placeholder="Password" autoComplete="new-password" />
         </p>
         <button className="btn btn-lg btn-primary btn-block" type="submit">Login</button>
       </form>

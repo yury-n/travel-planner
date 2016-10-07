@@ -11,7 +11,12 @@ export const USERS_FETCHED = 'USERS_FETCHED';
 export const USERS_CREATE_SUCCESS = 'USERS_CREATE_SUCCESS';
 export const USERS_CREATE_FAILURE = 'USERS_CREATE_FAILURE';
 export const USERS_OPEN_DELETE_MODAL = 'USERS_OPEN_DELETE_MODAL';
+export const USERS_OPEN_EDIT_MODAL = 'USERS_OPEN_EDIT_MODAL';
 export const CLOSE_MODAL = 'CLOSE_MODAL';
+export const USERS_DELETE_SUCCESS = 'USERS_DELETE_SUCCESS';
+export const USERS_DELETE_FAILURE = 'USERS_DELETE_FAILURE';
+export const USERS_UPDATE_SUCCESS = 'USERS_UPDATE_SUCCESS';
+export const USERS_UPDATE_FAILURE = 'USERS_UPDATE_FAILURE';
 
 const parseResponse = (response) => {
   return response.json().then(data => ({
@@ -20,22 +25,27 @@ const parseResponse = (response) => {
   }));
 };
 
-const postJSON = (url, params) => {
-  return fetch(url, {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(params)
-  })
-};
+const fetchWithJSON = (method) => {
+  return (url, params) => {
+      return fetch(url, {
+        method: method,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(params)
+      });
+  };
+}
+const postWithJSON = fetchWithJSON('POST');
+const putWithJSON = fetchWithJSON('PUT');
+const deleteWithJSON = fetchWithJSON('DELETE');
 
 export const login = (name, password) => (dispatch) => {
   dispatch({
     type: USERS_LOGIN
   });
-  return postJSON('/api/users/authenticate', {name, password})
+  return postWithJSON('/api/users/authenticate', {name, password})
           .then(parseResponse).then(
             response => {
               if (response.status == 200) {
@@ -49,7 +59,7 @@ export const login = (name, password) => (dispatch) => {
                 dispatch(loginFailure(response.data.message));
               }
             }
-          ).catch(alert);
+          );
 };
 
 export const loginFailure = (message) => ({
@@ -66,7 +76,7 @@ export const signup = (name, password) => (dispatch) => {
   dispatch({
     type: USERS_SIGNUP
   });
-  return postJSON('/api/users/', {name, password})
+  return postWithJSON('/api/users/', {name, password})
           .then(parseResponse).then(
             response => {
               if (response.status == 200) {
@@ -80,7 +90,7 @@ export const signup = (name, password) => (dispatch) => {
                 dispatch(signupFailure(response.data.message));
               }
             }
-          ).catch(alert);
+          );
 };
 
 export const signupFailure = (message) => ({
@@ -100,7 +110,7 @@ export const fetchUsers = () => (dispatch) => {
 };
 
 export const createUser = (name, password, role) => (dispatch) => {
-  return postJSON('/api/users/', {name, password, role}).then(parseResponse).then(
+  return postWithJSON('/api/users/', {name, password, role}).then(parseResponse).then(
     response => {
       if (response.status == 200) {
         dispatch({
@@ -127,3 +137,47 @@ export const openUserDeleteModal = (userid, name) => ({
   userid,
   name
 });
+
+export const deleteUser = (userid) => (dispatch) => {
+  dispatch({
+    type: CLOSE_MODAL
+  });
+  return deleteWithJSON('/api/users/' + userid, {})
+          .then(parseResponse).then(
+            response => {
+              if (response.status == 200) {
+                dispatch({
+                  type: USERS_DELETE_SUCCESS,
+                  message: response.data.message,
+                  userid
+                });
+              }
+            }
+          );
+};
+
+export const openUserEditModal = (userid, name, role) => ({
+  type: USERS_OPEN_EDIT_MODAL,
+  userid,
+  name,
+  role
+});
+
+export const updateUser = (userid, password, role) => (dispatch) => {
+  dispatch({
+    type: CLOSE_MODAL
+  });
+  return putWithJSON('/api/users/' + userid, {password, role})
+          .then(parseResponse).then(
+            response => {
+              if (response.status == 200) {
+                dispatch({
+                  type: USERS_UPDATE_SUCCESS,
+                  message: response.data.message,
+                  userid,
+                  role
+                });
+              }
+            }
+          );
+};

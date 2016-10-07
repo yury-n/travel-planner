@@ -3,6 +3,9 @@ import {
   USERS_CREATE_SUCCESS,
   USERS_CREATE_FAILURE,
   USERS_OPEN_DELETE_MODAL,
+  USERS_DELETE_SUCCESS,
+  USERS_OPEN_EDIT_MODAL,
+  USERS_UPDATE_SUCCESS,
   CLOSE_MODAL
 } from '../actions';
 
@@ -44,6 +47,39 @@ const users = (state, action) => {
           userid: action.userid,
           name: action.name
         }
+      };
+    case USERS_DELETE_SUCCESS:
+      return {
+        ...state,
+        errored: false,
+        message: action.message,
+        list: state.list.filter(user => user._id != action.userid)
+      };
+    case USERS_OPEN_EDIT_MODAL:
+      return {
+        ...state,
+        modal: {
+          type: 'edit',
+          userid: action.userid,
+          name: action.name,
+          role: action.role
+        }
+      };
+    case USERS_UPDATE_SUCCESS:
+      return {
+        ...state,
+        errored: false,
+        message: action.message,
+        list: state.list.map(user => {
+          if (user._id == action.userid) {
+            return {
+              ...user,
+              role: action.role
+            };
+          } else {
+            return user;
+          }
+        })
       };
     case CLOSE_MODAL:
       return {

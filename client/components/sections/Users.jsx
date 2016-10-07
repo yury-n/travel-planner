@@ -4,8 +4,9 @@ import { getUsers } from '../../reducers';
 import { fetchUsers } from '../../actions';
 import CreateUser from './Users/CreateUser';
 import UsersTable from './Users/UsersTable';
+import UserDeleteModal from './Users/modals/UserDeleteModal';
+import UserEditModal from './Users/modals/UserEditModal';
 import Message from '../Message';
-import UserDeleteModal from '../modals/UserDeleteModal';
 
 class Users extends Component {
 
@@ -25,6 +26,8 @@ class Users extends Component {
     if (modal) {
       if (modal.type == 'delete') {
         modalComponent = <UserDeleteModal userid={modal.userid} name={modal.name} />;
+      } else if (modal.type == 'edit') {
+        modalComponent = <UserEditModal userid={modal.userid} name={modal.name} role={modal.role} />;
       }
     }
 

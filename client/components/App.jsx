@@ -4,7 +4,6 @@ import Welcome from './sections/Welcome';
 import Login from './sections/Login';
 import Signup from './sections/Signup';
 import Users from './sections/Users';
-import Modal from './modals/Modal';
 
 const App = ({ params }) => {
 

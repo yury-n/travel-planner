@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 
 class RoleButton extends Component {
+  
   constructor(props) {
     super(props);
-    this.state = {role: 'regular'};
+    this.state = {role: props.role || 'regular'};
     this.toggleRole = this.toggleRole.bind(this);
   }
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { closeModal } from '../../actions';
+import { closeModal } from '../actions';
 
 class Modal extends Component {
   render() {
@@ -19,7 +19,7 @@ class Modal extends Component {
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-default" onClick={this.props.closeModal}>Close</button>
-              <button type="button" className="btn btn-primary">{actionName}</button>
+              <button type="button" className="btn btn-primary" onClick={this.props.action}>{actionName}</button>
             </div>
           </div>
         </div>
