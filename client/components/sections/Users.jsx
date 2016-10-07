@@ -4,8 +4,8 @@ import { getUsers } from '../../reducers';
 import { fetchUsers } from '../../actions';
 import CreateUser from './Users/CreateUser';
 import UsersTable from './Users/UsersTable';
-import UserDeleteModal from './Users/modals/UserDeleteModal';
-import UserEditModal from './Users/modals/UserEditModal';
+import DeleteUserModal from './Users/modals/DeleteModal';
+import EditUserModal from './Users/modals/EditModal';
 import Message from '../Message';
 
 class Users extends Component {
@@ -25,9 +25,9 @@ class Users extends Component {
     let modalComponent = null;
     if (modal) {
       if (modal.type == 'delete') {
-        modalComponent = <UserDeleteModal userid={modal.userid} name={modal.name} />;
+        modalComponent = <DeleteUserModal userid={modal.userid} name={modal.name} />;
       } else if (modal.type == 'edit') {
-        modalComponent = <UserEditModal userid={modal.userid} name={modal.name} role={modal.role} />;
+        modalComponent = <EditUserModal userid={modal.userid} name={modal.name} role={modal.role} />;
       }
     }
 
@@ -42,11 +42,7 @@ class Users extends Component {
   }
 }
 
-const mapStateToProps = (state, params) => {
-  return {
-    ...getUsers(state)
-  };
-};
+const mapStateToProps = (state, params) => getUsers(state);
 
 export default connect(
   mapStateToProps,

@@ -1,27 +1,26 @@
 import React, { Component } from 'react';
 
 class RoleButton extends Component {
-  
+
   constructor(props) {
     super(props);
-    this.state = {role: props.role || 'regular'};
+    this.state = {selectedRole: props.selectedRole || 'regular'};
     this.toggleRole = this.toggleRole.bind(this);
   }
 
   toggleRole() {
-    const { role } = this.state;
-    this.setState({role: role == 'regular' ? 'admin' : 'regular'});
+    const { selectedRole } = this.state;
+    this.setState({selectedRole: selectedRole == 'regular' ? 'admin' : 'regular'});
   }
 
-  getRole() {
-    const { role } = this.state;
-    return role;
+  getSelectedRole() {
+    return this.state.selectedRole;
   }
 
   render() {
-    const { role } = this.state;
+    const { selectedRole } = this.state;
     return (
-      <button onClick={this.toggleRole} type="button" className="btn btn-default dropdown-toggle"><span ref="role">{role}</span> <span className="caret"></span></button>
+      <button onClick={this.toggleRole} type="button" className="btn btn-default dropdown-toggle"><span ref="role">{selectedRole}</span> <span className="caret"></span></button>
     )
   }
 }

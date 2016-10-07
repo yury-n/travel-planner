@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-fetch';
+import { getUsers } from '../reducers';
 
 export const USERS_LOGIN = 'USERS_LOGIN';
 export const USERS_LOGIN_SUCCESS = 'USERS_LOGIN_SUCCESS';
@@ -17,6 +18,13 @@ export const USERS_DELETE_SUCCESS = 'USERS_DELETE_SUCCESS';
 export const USERS_DELETE_FAILURE = 'USERS_DELETE_FAILURE';
 export const USERS_UPDATE_SUCCESS = 'USERS_UPDATE_SUCCESS';
 export const USERS_UPDATE_FAILURE = 'USERS_UPDATE_FAILURE';
+export const TRAVELS_FETCHED = 'TRAVELS_FETCHED';
+export const TRAVELS_CREATE_SUCCESS = 'TRAVELS_CREATE_SUCCESS';
+export const TRAVELS_CREATE_FAILURE = 'TRAVELS_CREATE_FAILURE';
+export const TRAVELS_OPEN_DELETE_MODAL = 'TRAVELS_OPEN_DELETE_MODAL';
+export const TRAVELS_OPEN_EDIT_MODAL = 'TRAVELS_OPEN_EDIT_MODAL';
+export const TRAVELS_DELETE_SUCCESS = 'TRAVELS_DELETE_SUCCESS';
+export const TRAVELS_DELETE_FAILURE = 'TRAVELS_DELETE_FAILURE';
 
 const parseResponse = (response) => {
   return response.json().then(data => ({
@@ -40,6 +48,10 @@ const fetchWithJSON = (method) => {
 const postWithJSON = fetchWithJSON('POST');
 const putWithJSON = fetchWithJSON('PUT');
 const deleteWithJSON = fetchWithJSON('DELETE');
+
+/*
+USERS
+*/
 
 export const login = (name, password) => (dispatch) => {
   dispatch({
@@ -132,7 +144,7 @@ export const closeModal = () => ({
   type: CLOSE_MODAL
 });
 
-export const openUserDeleteModal = (userid, name) => ({
+export const openDeleteUserModal = (userid, name) => ({
   type: USERS_OPEN_DELETE_MODAL,
   userid,
   name
@@ -156,7 +168,7 @@ export const deleteUser = (userid) => (dispatch) => {
           );
 };
 
-export const openUserEditModal = (userid, name, role) => ({
+export const openEditUserModal = (userid, name, role) => ({
   type: USERS_OPEN_EDIT_MODAL,
   userid,
   name,
@@ -176,6 +188,74 @@ export const updateUser = (userid, password, role) => (dispatch) => {
                   message: response.data.message,
                   userid,
                   role
+                });
+              }
+            }
+          );
+};
+
+/*
+TRAVELS
+*/
+
+export const fetchTravels = () => (dispatch, getState) => {
+  return fetch('/api/travels/').then(parseResponse).then(
+    response => {
+      if (getUsers(getState()).list.length) {
+        dispatch(travelsFetched(response));
+      } else {
+        dispatch(fetchUsers()).then(() => {
+          dispatch(travelsFetched(response));
+        })
+      }
+    }
+  )
+};
+
+export const travelsFetched = (response) => ({
+  type: TRAVELS_FETCHED,
+  travels: response.data
+});
+
+export const createTravel = (destination, startDate, endDate, comment, _userid) => (dispatch) => {
+  return postWithJSON(
+    '/api/travels/',
+    {destination, startDate, endDate, comment, _userid}).then(parseResponse).then(
+    response => {
+      if (response.status == 200) {
+        dispatch({
+          type: TRAVELS_CREATE_SUCCESS,
+          travel: response.data.travel,
+          message: 'Travel successfully created!'
+        });
+      } else {
+        dispatch({
+          type: TRAVELS_CREATE_FAILURE,
+          message: response.data.message
+        });
+      }
+    }
+  )
+};
+
+export const openDeleteTravelModal = (travelid, destination) => ({
+  type: TRAVELS_OPEN_DELETE_MODAL,
+  travelid,
+  destination
+});
+
+export const deleteTravel = (travelid) => (dispatch) => {
+  dispatch({
+    type: CLOSE_MODAL
+  });
+  return deleteWithJSON('/api/travels/' + travelid, {})
+          .then(parseResponse).then(
+            response => {
+              if (response.status == 200) {
+                dispatch({
+                  type: TRAVELS_DELETE_SUCCESS,
+                  message: response.data.message,
+                  travelid
                 });
               }
             }

@@ -2,24 +2,35 @@ const validatePresenceOfFields = require('../utils/validatePresenceOfFields');
 const endWithServerError = require('../utils/endWithServerError');
 const Travel = require('../models/travel');
 
+const getISODateWithoutTime = (date) =>
+  date.toISOString().substring(0, 10);
+
 exports.getTravels = (req, res) => {
 
-  const query = Travel.find({}).select('_userid destination startDate endDate comment');
+  const query = Travel.find({}).select('_id _userid destination startDate endDate comment');
   query.exec((err, travels) => {
     if (err) {
       return endWithServerError(res, 'DB failure.');
     }
+    travels = travels.map(travel => {
+      return Object.assign(travel.toObject(), {
+        startDate: getISODateWithoutTime(travel.startDate),
+        endDate: getISODateWithoutTime(travel.endDate)
+      });
+    })
     res.json(travels);
   });
 };
 
 exports.getTravel = (req, res) => {
 
-  const query = Travel.findById(req.params.id).select('_userid destination startDate endDate comment');
+  const query = Travel.findById(req.params.id).select('_id _userid destination startDate endDate comment');
   query.exec((err, travel) => {
     if (err) {
       return endWithServerError(res, 'DB failure.');
     }
+    travel.startDate = getISODateWithoutTime(travel.startDate);
+    travel.endDate = getISODateWithoutTime(travel.endDate);
     if (travel) {
       res.json(travel);
     } else {
@@ -64,9 +75,14 @@ exports.createTravel = (req, res) => {
     if (err) {
       return endWithServerError(res, 'DB failure.');
     }
+    newTravel.startDate = getISODateWithoutTime(startDate);
+    newTravel.endDate = getISODateWithoutTime(endDate);
     res.json({
       message: `Have a great trip to ${destination}!`,
-      travel: travel
+      travel: Object.assign(newTravel.toObject(), {
+        startDate: getISODateWithoutTime(startDate),
+        endDate: getISODateWithoutTime(endDate)
+      })
     });
   });
 };

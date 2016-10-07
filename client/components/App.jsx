@@ -4,6 +4,7 @@ import Welcome from './sections/Welcome';
 import Login from './sections/Login';
 import Signup from './sections/Signup';
 import Users from './sections/Users';
+import Travels from './sections/Travels';
 
 const App = ({ params }) => {
 
@@ -15,8 +16,11 @@ const App = ({ params }) => {
     case 'signup':
       content = <Signup />;
       break;
-    case 'users'  :
+    case 'users':
       content = <Users />;
+      break;
+    case 'travels':
+      content = <Travels />;
       break;
     default:
       content = <Welcome />;

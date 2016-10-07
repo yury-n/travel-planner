@@ -15,7 +15,7 @@ class CreateUser extends Component {
     this.props.createUser(
       this.refs.inputName.value,
       this.refs.inputPassword.value,
-      this.refs.roleButton.getRole()
+      this.refs.roleButton.getSelectedRole()
     );
     this.refs.inputName.value = '';
     this.refs.inputPassword.value = '';

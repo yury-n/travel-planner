@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import Modal from '../../../Modal';
 import { deleteUser } from '../../../../actions';
 
-const UserDeleteModal = ({ userid, name, deleteUser }) => {
+const DeleteUserModal = ({ userid, name, deleteUser }) => {
   return (
     <Modal title="Delete user" actionName="Delete" action={() => deleteUser(userid)}>
       Are you sure you want to delete user <strong>{name}</strong>?
@@ -14,4 +14,4 @@ const UserDeleteModal = ({ userid, name, deleteUser }) => {
 export default connect(
   null,
   {deleteUser}
-)(UserDeleteModal);
+)(DeleteUserModal);

@@ -4,14 +4,14 @@ import RoleButton from '../RoleButton';
 import Modal from '../../../Modal';
 import { updateUser } from '../../../../actions';
 
-class UserEditModal extends Component {
+class EditUserModal extends Component {
   render() {
     const { userid, name, role, updateUser } = this.props;
     return (
       <Modal title="Edit user" actionName="Update" action={() => updateUser(
           userid,
           this.refs.inputPassword.value,
-          this.refs.roleButton.getRole()
+          this.refs.roleButton.getSelectedRole()
         )}>
         <p>
           Change attributes for user <strong>{name}</strong>.
@@ -24,7 +24,7 @@ class UserEditModal extends Component {
             </tr>
             <tr>
               <td><strong>Role: </strong></td>
-              <td><RoleButton role={role} ref="roleButton" /></td>
+              <td><RoleButton selectedRole={role} ref="roleButton" /></td>
             </tr>
           </tbody>
         </table>
@@ -37,4 +37,4 @@ class UserEditModal extends Component {
 export default connect(
   null,
   {updateUser}
-)(UserEditModal);
+)(EditUserModal);
