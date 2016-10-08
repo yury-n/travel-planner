@@ -36,22 +36,6 @@ const parseResponse = (response) => {
   }));
 };
 
-const fetchWithJSON = (method) => {
-  return (url, params) => {
-      return fetch(url, {
-        method: method,
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(params)
-      });
-  };
-}
-const postWithJSON = fetchWithJSON('POST');
-const putWithJSON = fetchWithJSON('PUT');
-const deleteWithJSON = fetchWithJSON('DELETE');
-
 const getWithJSONandAuth = (url, getState) => {
   const auth = getAuthentication(getState());
   if (auth.authenticated) {
@@ -63,6 +47,24 @@ const getWithJSONandAuth = (url, getState) => {
     }
   });
 };
+
+const fetchWithJSONandAuth = (method) => {
+  return (url, params, getState) => {
+    const auth = getAuthentication(getState());
+    params.authtoken = auth.authtoken;
+    return fetch(url, {
+      method: method,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(params)
+    });
+  };
+}
+const postWithJSONandAuth = fetchWithJSONandAuth('POST');
+const putWithJSONandAuth = fetchWithJSONandAuth('PUT');
+const deleteWithJSONandAuth = fetchWithJSONandAuth('DELETE');
 
 export const closeModal = () => ({
   type: CLOSE_MODAL
@@ -76,11 +78,11 @@ export const closeMessage = () => ({
 USERS
 */
 
-export const login = (name, password) => (dispatch) => {
+export const login = (name, password) => (dispatch, getState) => {
   dispatch({
     type: USERS_LOGIN
   });
-  return postWithJSON('/api/users/authenticate', {name, password})
+  return postWithJSONandAuth('/api/users/authenticate', {name, password}, getState)
           .then(parseResponse).then(
             response => {
               if (response.status == 200) {
@@ -107,11 +109,11 @@ export const logout = () => ({
   message: ''
 });
 
-export const signup = (name, password) => (dispatch) => {
+export const signup = (name, password) => (dispatch, getState) => {
   dispatch({
     type: USERS_SIGNUP
   });
-  return postWithJSON('/api/users/', {name, password})
+  return postWithJSONandAuth('/api/users/', {name, password}, getState)
           .then(parseResponse).then(
             response => {
               if (response.status == 200) {
@@ -144,23 +146,24 @@ export const fetchUsers = () => (dispatch) => {
   )
 };
 
-export const createUser = (name, password, role) => (dispatch) => {
-  return postWithJSON('/api/users/', {name, password, role}).then(parseResponse).then(
-    response => {
-      if (response.status == 200) {
-        dispatch({
-          type: USERS_CREATE_SUCCESS,
-          user: response.data.user,
-          message: 'User successfully created!'
-        });
-      } else {
-        dispatch({
-          type: USERS_CREATE_FAILURE,
-          message: response.data.message
-        });
+export const createUser = (name, password, role) => (dispatch, getState) => {
+  return postWithJSONandAuth('/api/users/', {name, password, role}, getState)
+    .then(parseResponse).then(
+      response => {
+        if (response.status == 200) {
+          dispatch({
+            type: USERS_CREATE_SUCCESS,
+            user: response.data.user,
+            message: 'User successfully created!'
+          });
+        } else {
+          dispatch({
+            type: USERS_CREATE_FAILURE,
+            message: response.data.message
+          });
+        }
       }
-    }
-  )
+    );
 };
 
 export const openDeleteUserModal = (userid, name) => ({
@@ -169,11 +172,11 @@ export const openDeleteUserModal = (userid, name) => ({
   name
 });
 
-export const deleteUser = (userid) => (dispatch) => {
+export const deleteUser = (userid) => (dispatch, getState) => {
   dispatch({
     type: CLOSE_MODAL
   });
-  return deleteWithJSON('/api/users/' + userid, {})
+  return deleteWithJSONandAuth('/api/users/' + userid, {}, getState)
           .then(parseResponse).then(
             response => {
               if (response.status == 200) {
@@ -194,11 +197,11 @@ export const openEditUserModal = (userid, name, role) => ({
   role
 });
 
-export const updateUser = (userid, password, role) => (dispatch) => {
+export const updateUser = (userid, password, role) => (dispatch, getState) => {
   dispatch({
     type: CLOSE_MODAL
   });
-  return putWithJSON('/api/users/' + userid, {password, role})
+  return putWithJSONandAuth('/api/users/' + userid, {password, role}, getState)
           .then(parseResponse).then(
             response => {
               if (response.status == 200) {
@@ -218,7 +221,12 @@ TRAVELS
 */
 
 export const fetchTravels = (forAuthUser = false) => (dispatch, getState) => {
-  let url = '/api/' + (forAuthUser ? 'my/' : '') + 'travels/';
+  let url;
+  if (forAuthUser) {
+    url = '/api/my/travels';
+  } else {
+    url = '/api/travels';
+  }
   return getWithJSONandAuth(url, getState).then(parseResponse).then(
     response => {
       if (getUsers(getState()).list.length) {
@@ -237,10 +245,19 @@ export const travelsFetched = (response) => ({
   travels: response.data
 });
 
-export const createTravel = (destination, startDate, endDate, comment, _userid) => (dispatch) => {
-  return postWithJSON(
-    '/api/travels/',
-    {destination, startDate, endDate, comment, _userid}).then(parseResponse).then(
+export const createTravel = (forAuthUser, destination, startDate, endDate, comment, _userid) =>
+                              (dispatch, getState) => {
+  let url;
+  if (forAuthUser) {
+    url = '/api/my/travels';
+  } else {
+    url = '/api/travels';
+  }
+  return postWithJSONandAuth(
+    url,
+    {destination, startDate, endDate, comment, _userid},
+    getState
+  ).then(parseResponse).then(
     response => {
       if (response.status == 200) {
         dispatch({
@@ -264,11 +281,11 @@ export const openDeleteTravelModal = (travelid, destination) => ({
   destination
 });
 
-export const deleteTravel = (travelid) => (dispatch) => {
+export const deleteTravel = (travelid) => (dispatch, getState) => {
   dispatch({
     type: CLOSE_MODAL
   });
-  return deleteWithJSON('/api/travels/' + travelid, {})
+  return deleteWithJSONandAuth('/api/travels/' + travelid, {}, getState)
           .then(parseResponse).then(
             response => {
               if (response.status == 200) {
@@ -291,11 +308,11 @@ export const openEditTravelModal = (travelid, destination, startDate, endDate, c
   comment
 });
 
-export const updateTravel = (travelid, destination, startDate, endDate, comment) => (dispatch) => {
+export const updateTravel = (travelid, destination, startDate, endDate, comment) => (dispatch, getState) => {
   dispatch({
     type: CLOSE_MODAL
   });
-  return putWithJSON('/api/travels/' + travelid, {destination, startDate, endDate, comment})
+  return putWithJSONandAuth('/api/travels/' + travelid, {destination, startDate, endDate, comment}, getState)
           .then(parseResponse).then(
             response => {
               if (response.status == 200) {

@@ -17,6 +17,7 @@ class CreateTravel extends Component {
     const { forAuthUser } = this.props;
 
     this.props.createTravel(
+      forAuthUser,
       this.refs.inputDestination.value,
       this.refs.inputStartDate.value,
       this.refs.inputEndDate.value,

@@ -44,7 +44,9 @@ exports.getTravel = (req, res) => {
 };
 
 exports.createTravel = (req, res) => {
-
+  if (req.forUserid) {
+    req.body._userid = req.forUserid;
+  }
   if (!validatePresenceOfFields(req, res, ['_userid', 'destination', 'startDate', 'endDate'], 'all')) {
     return;
   }
