@@ -290,6 +290,11 @@ export const updateTravel = (travelid, destination, startDate, endDate, comment)
                   endDate,
                   comment
                 });
+              } else {
+                dispatch({
+                  type: TRAVELS_UPDATE_FAILURE,
+                  message: response.data.message
+                });
               }
             }
           );

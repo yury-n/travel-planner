@@ -98,38 +98,37 @@ exports.updateTravel = (req, res) => {
     req.params.id,
     '_userid destination startDate endDate comment', (err, travel) => {
       if (err) {
-        return endWithServerError(res, 'DB failure.');
+        return endWithServerError(res, 'DB failure. Failed to fetch.');
       }
       const updates = {};
       if (req.body.destination) {
-        updates['destination'] = req.body.destination;
+        updates.destination = req.body.destination;
       }
       if (req.body.startDate) {
-        updates['startDate'] = new Date(req.body.startDate);
+        updates.startDate = new Date(req.body.startDate);
       }
       if (req.body.endDate) {
-        updates['endDate'] = new Date(req.body.endDate);
+        updates.endDate = new Date(req.body.endDate);
       }
       if (req.body.comment) {
-        updates['comment'] = req.body.comment;
+        updates.comment = req.body.comment;
       }
-      const travelWithUpdates = Object.assign(travel, updates);
-      if (isNaN(travelWithUpdates.startDate.getTime())) {
+      if (isNaN(updates.startDate.getTime())) {
         res.status(400);
         return res.json({message: 'Invalid startDate.'});
       }
-      if (isNaN(travelWithUpdates.endDate.getTime())) {
+      if (isNaN(updates.endDate.getTime())) {
         res.status(400);
         return res.json({message: 'Invalid endDate.'});
       }
-      if (travelWithUpdates.startDate.getTime() > travelWithUpdates.endDate.getTime()) {
+      if (updates.startDate.getTime() > updates.endDate.getTime()) {
         res.status(400);
         return res.json({message: 'endDate should be greater than startDate.'});
       }
 
-      travelWithUpdates.save((err, book) => {
+      Object.assign(travel, updates).save((err, book) => {
         if (err) {
-          return endWithServerError(res, 'DB failure.');
+          return endWithServerError(res, 'DB failure. Failed to save.');
         }
   			res.json({message: 'Travel successfully updated!'});
   		});
