@@ -7,6 +7,7 @@ const Root = ({ store }) => (
     <Provider store={store}>
       <Router history={browserHistory}>
         <Route path='/(:section)' component={App} />
+        <Route path='/(:section)/(:subsection)' component={App} />
       </Router>
     </Provider>
 );

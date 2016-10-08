@@ -6,8 +6,11 @@ const getISODateWithoutTime = (date) =>
   date.toISOString().substring(0, 10);
 
 exports.getTravels = (req, res) => {
-
-  const query = Travel.find({}).select('_id _userid destination startDate endDate comment');
+  const filter = {};
+  if (req.forUserid) {
+    filter._userid = req.forUserid;
+  }
+  const query = Travel.find(filter).select('_id _userid destination startDate endDate comment');
   query.exec((err, travels) => {
     if (err) {
       return endWithServerError(res, 'DB failure.');

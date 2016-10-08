@@ -19,7 +19,7 @@ module.exports = (action) => {
         res.json({message: 'Action is not permitted.'});
         return next();
       }
-      next();
+      return next();
     });
   }
 }

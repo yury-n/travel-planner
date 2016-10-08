@@ -25,10 +25,10 @@ class CreateUser extends Component {
     return (
       <div className="well">
         <form onSubmit={this.handleSubmit}>
-          <div className="form-group pull-left" style={{width: "156px", marginRight: "4px"}}>
+          <div className="form-group pull-left" style={{width: "156px"}}>
             <input type="text" ref="inputName" className="form-control" placeholder="name" autoComplete="off" />
           </div>
-          <div className="form-group pull-left" style={{width: "130px", marginRight: "4px"}}>
+          <div className="form-group pull-left" style={{width: "130px"}}>
             <input type="password" ref="inputPassword" className="form-control" placeholder="password" autoComplete="new-password" />
           </div>
           <RoleButton ref="roleButton" />

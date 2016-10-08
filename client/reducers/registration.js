@@ -1,4 +1,8 @@
-import { USERS_SIGNUP_SUCCESS, USERS_SIGNUP_FAILURE } from '../actions';
+import {
+  USERS_SIGNUP_SUCCESS,
+  USERS_SIGNUP_FAILURE,
+  CLOSE_MESSAGE
+} from '../actions';
 
 const registration = (state, action) => {
 
@@ -22,6 +26,12 @@ const registration = (state, action) => {
       return {
         errored: true,
         message
+      };
+    }
+    case CLOSE_MESSAGE: {
+      return {
+        ...state,
+        message: null
       };
     }
     default:

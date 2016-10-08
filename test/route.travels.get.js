@@ -29,7 +29,7 @@ describe('GET /api/travels', () => {
           });
     });
   });
-  return;
+  
   it('should return empty array when there is no travels', (done) => {
     chai.request(server)
         .get('/api/travels')

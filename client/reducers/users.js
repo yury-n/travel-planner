@@ -6,7 +6,8 @@ import {
   USERS_DELETE_SUCCESS,
   USERS_OPEN_EDIT_MODAL,
   USERS_UPDATE_SUCCESS,
-  CLOSE_MODAL
+  CLOSE_MODAL,
+  CLOSE_MESSAGE
 } from '../actions';
 
 const users = (state, action) => {
@@ -85,6 +86,11 @@ const users = (state, action) => {
       return {
         ...state,
         modal: null
+      };
+    case CLOSE_MESSAGE:
+      return {
+        ...state,
+        message: null
       };
     default:
       return state;

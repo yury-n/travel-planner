@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-fetch';
-import { getUsers } from '../reducers';
+import { getUsers, getAuthentication } from '../reducers';
 
 export const USERS_LOGIN = 'USERS_LOGIN';
 export const USERS_LOGIN_SUCCESS = 'USERS_LOGIN_SUCCESS';
@@ -13,7 +13,6 @@ export const USERS_CREATE_SUCCESS = 'USERS_CREATE_SUCCESS';
 export const USERS_CREATE_FAILURE = 'USERS_CREATE_FAILURE';
 export const USERS_OPEN_DELETE_MODAL = 'USERS_OPEN_DELETE_MODAL';
 export const USERS_OPEN_EDIT_MODAL = 'USERS_OPEN_EDIT_MODAL';
-export const CLOSE_MODAL = 'CLOSE_MODAL';
 export const USERS_DELETE_SUCCESS = 'USERS_DELETE_SUCCESS';
 export const USERS_DELETE_FAILURE = 'USERS_DELETE_FAILURE';
 export const USERS_UPDATE_SUCCESS = 'USERS_UPDATE_SUCCESS';
@@ -27,6 +26,8 @@ export const TRAVELS_DELETE_SUCCESS = 'TRAVELS_DELETE_SUCCESS';
 export const TRAVELS_DELETE_FAILURE = 'TRAVELS_DELETE_FAILURE';
 export const TRAVELS_UPDATE_SUCCESS = 'TRAVELS_UPDATE_SUCCESS';
 export const TRAVELS_UPDATE_FAILURE = 'TRAVELS_UPDATE_FAILURE';
+export const CLOSE_MODAL = 'CLOSE_MODAL';
+export const CLOSE_MESSAGE = 'CLOSE_MESSAGE';
 
 const parseResponse = (response) => {
   return response.json().then(data => ({
@@ -51,6 +52,26 @@ const postWithJSON = fetchWithJSON('POST');
 const putWithJSON = fetchWithJSON('PUT');
 const deleteWithJSON = fetchWithJSON('DELETE');
 
+const getWithJSONandAuth = (url, getState) => {
+  const auth = getAuthentication(getState());
+  if (auth.authenticated) {
+    url += '?authtoken=' + auth.authtoken;
+  }
+  return fetch(url, {
+    headers: {
+      'Accept': 'application/json'
+    }
+  });
+};
+
+export const closeModal = () => ({
+  type: CLOSE_MODAL
+});
+
+export const closeMessage = () => ({
+  type: CLOSE_MESSAGE
+});
+
 /*
 USERS
 */
@@ -67,7 +88,7 @@ export const login = (name, password) => (dispatch) => {
                   type: USERS_LOGIN_SUCCESS,
                   message: response.data.message,
                   user: response.data.user,
-                  token: response.data.token
+                  authtoken: response.data.authtoken
                 });
               } else {
                 dispatch(loginFailure(response.data.message));
@@ -98,7 +119,7 @@ export const signup = (name, password) => (dispatch) => {
                   type: USERS_SIGNUP_SUCCESS,
                   message: response.data.message,
                   user: response.data.user,
-                  token: response.data.token
+                  authtoken: response.data.authtoken
                 });
               } else {
                 dispatch(signupFailure(response.data.message));
@@ -141,10 +162,6 @@ export const createUser = (name, password, role) => (dispatch) => {
     }
   )
 };
-
-export const closeModal = () => ({
-  type: CLOSE_MODAL
-});
 
 export const openDeleteUserModal = (userid, name) => ({
   type: USERS_OPEN_DELETE_MODAL,
@@ -200,8 +217,9 @@ export const updateUser = (userid, password, role) => (dispatch) => {
 TRAVELS
 */
 
-export const fetchTravels = () => (dispatch, getState) => {
-  return fetch('/api/travels/').then(parseResponse).then(
+export const fetchTravels = (forAuthUser = false) => (dispatch, getState) => {
+  let url = '/api/' + (forAuthUser ? 'my/' : '') + 'travels/';
+  return getWithJSONandAuth(url, getState).then(parseResponse).then(
     response => {
       if (getUsers(getState()).list.length) {
         dispatch(travelsFetched(response));

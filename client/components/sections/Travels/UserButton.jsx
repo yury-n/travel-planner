@@ -7,18 +7,9 @@ class UserButton extends Component {
     this.state = {
       dropdownShown: false,
       selectedUserid: null,
-      selectedUsername: null
+      selectedUsername: 'select user'
     };
     this.toggleDropdown = this.toggleDropdown.bind(this);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.users.length) {
-      this.setState({
-        selectedUserid: nextProps.users[0]._id,
-        selectedUsername: nextProps.users[0].name
-      });
-    }
   }
 
   toggleDropdown() {

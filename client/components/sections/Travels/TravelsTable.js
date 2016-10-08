@@ -18,13 +18,13 @@ class TravelsTable extends Component {
   }
 
   render() {
-    const { travels } = this.props;
+    const { travels, forAuthUser } = this.props;
     return (
       <table className="table">
         <thead>
           <tr>
             <th>#</th>
-            <th>User</th>
+            {!forAuthUser ? <th>User</th> : null}
             <th>Destination</th>
             <th>Start Date</th>
             <th>End Date</th>
@@ -38,7 +38,7 @@ class TravelsTable extends Component {
             return (
               <tr key={index}>
                 <td><strong>{index + 1}</strong></td>
-                <td>{travel.username}</td>
+                {!forAuthUser ? <td>{travel.username}</td> : null}                
                 <td>{travel.destination}</td>
                 <td>{travel.startDate}</td>
                 <td>{travel.endDate}</td>

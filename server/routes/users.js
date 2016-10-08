@@ -1,5 +1,4 @@
 'use strict'
-
 const object = require('lodash/object');
 const passwordHash = require('password-hash');
 const jwt = require('jsonwebtoken');

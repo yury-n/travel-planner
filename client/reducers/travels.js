@@ -7,7 +7,8 @@ import {
   TRAVELS_OPEN_EDIT_MODAL,
   TRAVELS_UPDATE_SUCCESS,
   TRAVELS_UPDATE_FAILURE,
-  CLOSE_MODAL
+  CLOSE_MODAL,
+  CLOSE_MESSAGE
 } from '../actions';
 
 const travels = (state, action) => {
@@ -92,6 +93,11 @@ const travels = (state, action) => {
       return {
         ...state,
         modal: null
+      };
+    case CLOSE_MESSAGE:
+      return {
+        ...state,
+        message: null
       };
     default:
       return state;

@@ -8,8 +8,9 @@ const mongoose = require('./mongoose');
 const usersRoutes = require('./server/routes/users');
 const travelsRoutes = require('./server/routes/travels');
 const myTravelsRoutes = require('./server/routes/my/travels');
-const authorizeTo = require('./server/middlewares/authorizeTo');
 const authenticateFromToken = require('./server/middlewares/authenticateFromToken');
+const authorizeTo = require('./server/middlewares/authorizeTo');
+const doForAuthenticatedUser = require('./server/middlewares/doForAuthenticatedUser');
 const url = require('url');
 const path = require('path');
 
@@ -64,8 +65,8 @@ apiTravelsRouter.delete('/:id', travelsRoutes.deleteTravel);
 
 const apiMyTravelsRouter = express.Router();
 //apiMyTravelsRouter.use(authorizeTo('manageOwnTravels'));
-apiMyTravelsRouter.get('/', myTravelsRoutes.getMyTravels);
-apiMyTravelsRouter.post('/', myTravelsRoutes.createMyTravel);
+apiMyTravelsRouter.use(doForAuthenticatedUser);
+apiMyTravelsRouter.get('/', travelsRoutes.getTravels);
 
 apiRouter.use('/users', apiUsersRouter);
 apiRouter.use('/travels', apiTravelsRouter);

@@ -11,14 +11,14 @@ const SectionsBar = ({ authentication }) => {
         return (
           <ul className="nav navbar-nav">
             <NavTab to="/users">Users</NavTab>
-            <NavTab to="/my-travels">My Travels</NavTab>
+            <NavTab to="/my/travels">My Travels</NavTab>
           </ul>
         );
       case 'superadmin':
         return (
           <ul className="nav navbar-nav">
             <NavTab to="/users">Users</NavTab>
-            <NavTab to="/my-travels">My Travels</NavTab>
+            <NavTab to="/my/travels">My Travels</NavTab>
             <NavTab to="/travels">All Travels</NavTab>
           </ul>
         );
@@ -26,7 +26,7 @@ const SectionsBar = ({ authentication }) => {
       case 'regular':
         return (
           <ul className="nav navbar-nav">
-            <NavTab to="/my-travels">My Travels</NavTab>
+            <NavTab to="/my/travels">My Travels</NavTab>
           </ul>
         );
     }

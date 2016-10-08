@@ -11,11 +11,12 @@ import TravelsTable from './Travels/TravelsTable';
 class Travels extends Component {
 
   componentDidMount() {
-    this.props.fetchTravels();
+    const { forAuthUser } = this.props;
+    this.props.fetchTravels(forAuthUser);
   }
 
   render() {
-    const { message, errored, modal } = this.props;
+    const { message, errored, modal, forAuthUser } = this.props;
 
     let messageComponent = null;
     if (message) {
@@ -34,8 +35,8 @@ class Travels extends Component {
     return (
       <div className="container" style={{width: "900px"}}>
         {messageComponent}
-        <CreateTravel />
-        <TravelsTable />
+        <CreateTravel forAuthUser={forAuthUser} />
+        <TravelsTable forAuthUser={forAuthUser} />
         {modalComponent}
       </div>
     );

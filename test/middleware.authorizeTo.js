@@ -1,4 +1,6 @@
 process.env.NODE_ENV = 'test';
+const chai = require('chai');
+const should = chai.should();
 const sinon = require('sinon');
 const authorizeTo = require('../server/middlewares/authorizeTo');
 
