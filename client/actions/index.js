@@ -25,6 +25,8 @@ export const TRAVELS_OPEN_DELETE_MODAL = 'TRAVELS_OPEN_DELETE_MODAL';
 export const TRAVELS_OPEN_EDIT_MODAL = 'TRAVELS_OPEN_EDIT_MODAL';
 export const TRAVELS_DELETE_SUCCESS = 'TRAVELS_DELETE_SUCCESS';
 export const TRAVELS_DELETE_FAILURE = 'TRAVELS_DELETE_FAILURE';
+export const TRAVELS_UPDATE_SUCCESS = 'TRAVELS_UPDATE_SUCCESS';
+export const TRAVELS_UPDATE_FAILURE = 'TRAVELS_UPDATE_FAILURE';
 
 const parseResponse = (response) => {
   return response.json().then(data => ({
@@ -256,6 +258,37 @@ export const deleteTravel = (travelid) => (dispatch) => {
                   type: TRAVELS_DELETE_SUCCESS,
                   message: response.data.message,
                   travelid
+                });
+              }
+            }
+          );
+};
+
+export const openEditTravelModal = (travelid, destination, startDate, endDate, comment) => ({
+  type: TRAVELS_OPEN_EDIT_MODAL,
+  travelid,
+  destination,
+  startDate,
+  endDate,
+  comment
+});
+
+export const updateTravel = (travelid, destination, startDate, endDate, comment) => (dispatch) => {
+  dispatch({
+    type: CLOSE_MODAL
+  });
+  return putWithJSON('/api/travels/' + travelid, {destination, startDate, endDate, comment})
+          .then(parseResponse).then(
+            response => {
+              if (response.status == 200) {
+                dispatch({
+                  type: TRAVELS_UPDATE_SUCCESS,
+                  travelid,
+                  message: response.data.message,
+                  destination,
+                  startDate,
+                  endDate,
+                  comment
                 });
               }
             }

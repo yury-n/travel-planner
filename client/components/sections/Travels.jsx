@@ -4,7 +4,7 @@ import { fetchTravels } from '../../actions';
 import { getTravels } from '../../reducers';
 import CreateTravel from './Travels/CreateTravel';
 import DeleteTravelModal from './Travels/modals/DeleteModal';
-//import EditTravelModal from './Travels/modals/EditModal';
+import EditTravelModal from './Travels/modals/EditModal';
 import Message from '../Message';
 import TravelsTable from './Travels/TravelsTable';
 
@@ -15,7 +15,7 @@ class Travels extends Component {
   }
 
   render() {
-    const { message, errored, modal, list } = this.props;
+    const { message, errored, modal } = this.props;
 
     let messageComponent = null;
     if (message) {
@@ -25,9 +25,9 @@ class Travels extends Component {
     let modalComponent = null;
     if (modal) {
       if (modal.type == 'delete') {
-        modalComponent = <DeleteTravelModal travelid={modal.travelid} destination={modal.destination} />;
+        modalComponent = <DeleteTravelModal {...modal} />;
       } else if (modal.type == 'edit') {
-        //modalComponent = <EditUserModal userid={modal.userid} name={modal.name} role={modal.role} />;
+        modalComponent = <EditTravelModal {...modal} />;
       }
     }
 
@@ -35,7 +35,7 @@ class Travels extends Component {
       <div className="container" style={{width: "900px"}}>
         {messageComponent}
         <CreateTravel />
-        <TravelsTable travels={list} />
+        <TravelsTable />
         {modalComponent}
       </div>
     );

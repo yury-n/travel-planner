@@ -92,3 +92,7 @@ const users = (state, action) => {
 };
 
 export default users;
+
+export const getUserById = (state, userid) => {
+  return state.list.find(user => user._id == userid);
+};

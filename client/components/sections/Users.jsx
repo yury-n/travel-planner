@@ -25,9 +25,9 @@ class Users extends Component {
     let modalComponent = null;
     if (modal) {
       if (modal.type == 'delete') {
-        modalComponent = <DeleteUserModal userid={modal.userid} name={modal.name} />;
+        modalComponent = <DeleteUserModal {...modal} />;
       } else if (modal.type == 'edit') {
-        modalComponent = <EditUserModal userid={modal.userid} name={modal.name} role={modal.role} />;
+        modalComponent = <EditUserModal {...modal} />;
       }
     }
 
