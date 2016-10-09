@@ -36,58 +36,39 @@ const parseResponse = (response) => {
   }));
 };
 
-const getWithJSONandAuth = (url, getState) => {
+const getJSONHeadersWithAuth = (getState) => {
   const auth = getAuthentication(getState());
-  if (auth.authenticated) {
-    url += (url.indexOf('?') === -1 ? '?' : '&') + 'authtoken=' + auth.authtoken;
-  }
-  return fetch(url, {
-    headers: {
-      'Accept': 'application/json'
-    }
-  });
-};
+  return {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'x-access-token': auth.authtoken
+  };
+}
 
-const postWithJSONandAuth = (url, params, getState) => {
-  const auth = getAuthentication(getState());
-  params.authtoken = auth.authtoken;
-  return fetch(url, {
+const getWithJSONandAuth = (url, getState) =>
+  fetch(url, {
+    headers: getJSONHeadersWithAuth(getState)
+  });
+
+const postWithJSONandAuth = (url, params, getState) =>
+  fetch(url, {
     method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
+    headers: getJSONHeadersWithAuth(getState),
     body: JSON.stringify(params)
   });
-};;
 
-const putWithJSONandAuth = (url, params, getState) => {
-  const auth = getAuthentication(getState());
-  if (auth.authenticated) {
-    url += '?authtoken=' + auth.authtoken;
-  }
-  return fetch(url, {
+const putWithJSONandAuth = (url, params, getState) =>
+  fetch(url, {
     method: 'PUT',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
+    headers: getJSONHeadersWithAuth(getState),
     body: JSON.stringify(params)
   });
-};
 
-const deleteWithJSONandAuth = (url, getState) => {
-  const auth = getAuthentication(getState());
-  if (auth.authenticated) {
-    url += '?authtoken=' + auth.authtoken;
-  }
-  return fetch(url, {
+const deleteWithJSONandAuth = (url, getState) =>
+  fetch(url, {
     method: 'DELETE',
-    headers: {
-      'Accept': 'application/json'
-    }
+    headers: getJSONHeadersWithAuth(getState)
   });
-};
 
 export const closeModal = () => ({
   type: CLOSE_MODAL

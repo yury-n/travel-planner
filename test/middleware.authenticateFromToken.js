@@ -46,10 +46,31 @@ describe('authenticateFromToken middleware', () => {
     })
   });
 
+  it('should authenticate from x-access-token in headers', (done) => {
+    const authtoken = jwt.sign(
+      {name: 'Jane', role: 'admin'},
+      config.appSecretKey
+    );
+    const req = {
+      body: {},
+      query: {},
+      headers: {'x-access-token': authtoken}
+    };
+    const res = {};
+    authenticateFromToken(req, res, () => {
+      should.exist(req.authenticatedUser);
+      req.authenticatedUser.should.be.a('object');
+      req.authenticatedUser.should.have.property('name').eql('Jane');
+      req.authenticatedUser.should.have.property('role').eql('admin');
+      done();
+    })
+  });
+
   it('should neither set authenticated user nor error out on missing authtoken', (done) => {
     const req = {
       body: {},
-      query: {}
+      query: {},
+      headers: {}
     };
     const res = {
       status: sinon.spy(),

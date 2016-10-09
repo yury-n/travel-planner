@@ -47,15 +47,21 @@ apiRouter.all('*', (req, res, next) => {
 });
 
 const apiUsersRouter = express.Router();
-//apiUsersRouter.use(authorizeTo('manageUsers'));
 apiUsersRouter.get('/', usersRoutes.getUsers);
-apiUsersRouter.post('/', usersRoutes.createUser);
 apiUsersRouter.get('/:id', usersRoutes.getUser);
+if (process.env.NODE_ENV != 'test') {
+  apiUsersRouter.post('/', authorizeTo('manageUsers'));
+  apiUsersRouter.put('/:id', authorizeTo('manageUsers'));
+  apiUsersRouter.delete('/:id', authorizeTo('manageUsers'));
+}
+apiUsersRouter.post('/', usersRoutes.createUser);
 apiUsersRouter.put('/:id', usersRoutes.updateUser);
 apiUsersRouter.delete('/:id', usersRoutes.deleteUser);
 
 const apiTravelsRouter = express.Router();
-//apiTravelsRouter.use(authorizeTo('manageAnyTravels'));
+if (process.env.NODE_ENV != 'test') {
+  apiTravelsRouter.use(authorizeTo('manageAnyTravels'));
+}
 apiTravelsRouter.get('/', travelsRoutes.getTravels);
 apiTravelsRouter.post('/', travelsRoutes.createTravel);
 apiTravelsRouter.get('/:id', travelsRoutes.getTravel);

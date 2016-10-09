@@ -25,6 +25,7 @@ describe('POST /api/users', () => {
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.should.have.property('message').eql('Welcome, Peter!');
+          res.body.should.have.property('authtoken');
           res.body.should.have.property('user');
           validatePublicUserObject(res.body.user);
           User.find(res.body.user, (err, doc) => {

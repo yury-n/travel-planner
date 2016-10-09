@@ -7,7 +7,10 @@ module.exports = (action) => {
     if (!req.authenticatedUser) {
       res.status(403);
       res.json({message: 'No authenticated user.'});
-      return next();
+      if (process.env.NODE_ENV == 'test') {
+        next();
+      }
+      return;
     }
 
     Permission.isActionPermitted(req.authenticatedUser.role, action, (err, isPermitted) => {
@@ -16,11 +19,14 @@ module.exports = (action) => {
       }
       if (!isPermitted) {
         res.status(403);
-        res.json({message: 'Action is not permitted.'});
         // res.json({message: 'Action ' + action + ' is not permitted for role ' + req.authenticatedUser.role + '.'});
-        return next();
+        res.json({message: 'Action is not permitted.'});
+        if (process.env.NODE_ENV == 'test') {
+          next();
+        }
+      } else {
+        next();
       }
-      return next();
     });
   }
 }

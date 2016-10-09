@@ -65,9 +65,16 @@ exports.createUser = (req, res) => {
       if (err) {
         return endWithServerError(res, 'DB failure.');
       }
+      const publicUserInfo = object.pick(user, ['_id', 'name', 'role']);
+      const authtoken = jwt.sign(
+        publicUserInfo,
+        config.appSecretKey,
+        {expiresIn: '24 hours'}
+      );
       res.json({
         message: `Welcome, ${user.name}!`,
-        user: object.pick(user, ['_id', 'name', 'role'])
+        user: publicUserInfo,
+        authtoken: authtoken
       });
     });
   });
