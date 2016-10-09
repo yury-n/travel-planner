@@ -63,7 +63,9 @@ apiTravelsRouter.put('/:id', travelsRoutes.updateTravel);
 apiTravelsRouter.delete('/:id', travelsRoutes.deleteTravel);
 
 const apiMyTravelsRouter = express.Router();
-//apiMyTravelsRouter.use(authorizeTo('manageOwnTravels'));
+if (process.env.NODE_ENV != 'test') {
+  apiMyTravelsRouter.use(authorizeTo('manageOwnTravels'));
+}
 apiMyTravelsRouter.use(doForAuthenticatedUser);
 apiMyTravelsRouter.get('/', travelsRoutes.getTravels);
 apiMyTravelsRouter.post('/', travelsRoutes.createTravel);

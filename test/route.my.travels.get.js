@@ -14,11 +14,11 @@ describe('GET /api/my/travels', () => {
 
   beforeEach(done => Travel.remove({}, done));
 
-  const meUserid = new mongoose.Types.ObjectId;
-  const notMeUserid = new mongoose.Types.ObjectId;
+  const myUserid = new mongoose.Types.ObjectId;
+  const notMyUserid = new mongoose.Types.ObjectId;
 
   const authtoken = jwt.sign(
-    {_id: meUserid},
+    {_id: myUserid},
     config.appSecretKey,
     {expiresIn: '24 hours'}
   );
@@ -26,9 +26,9 @@ describe('GET /api/my/travels', () => {
   it('should return a list of user\'s travels', (done) => {
 
     Travel.create([
-      {_userid: meUserid, destination: 'Moscow', startDate: new Date('2014-11-01'), endDate: new Date('2014-11-12')},
-      {_userid: meUserid, destination: 'New York', startDate: new Date('2011-11-01'), endDate: new Date('2012-11-12')},
-      {_userid: notMeUserid, destination: 'Miami', startDate: new Date('2015-01-01'), endDate: new Date('2015-02-01')}
+      {_userid: myUserid, destination: 'Moscow', startDate: new Date('2014-11-01'), endDate: new Date('2014-11-12')},
+      {_userid: myUserid, destination: 'New York', startDate: new Date('2011-11-01'), endDate: new Date('2012-11-12')},
+      {_userid: notMyUserid, destination: 'Miami', startDate: new Date('2015-01-01'), endDate: new Date('2015-02-01')}
     ]).then(() => {
       chai.request(server)
           .get('/api/my/travels?authtoken=' + authtoken)
@@ -45,8 +45,8 @@ describe('GET /api/my/travels', () => {
 
   it('should return an empty array if there is no travels for the given user', (done) => {
     Travel.create([
-      {_userid: notMeUserid, destination: 'New York', startDate: new Date('2011-11-01'), endDate: new Date('2012-11-12')},
-      {_userid: notMeUserid, destination: 'Miami', startDate: new Date('2015-01-01'), endDate: new Date('2015-02-01')}
+      {_userid: notMyUserid, destination: 'New York', startDate: new Date('2011-11-01'), endDate: new Date('2012-11-12')},
+      {_userid: notMyUserid, destination: 'Miami', startDate: new Date('2015-01-01'), endDate: new Date('2015-02-01')}
     ]).then(() => {
       chai.request(server)
           .get('/api/my/travels?authtoken=' + authtoken)

@@ -15,10 +15,10 @@ describe('POST /api/my/travels', () => {
 
   beforeEach(done => Travel.remove({}, done));
 
-  const meUserid = new mongoose.Types.ObjectId;
+  const myUserid = new mongoose.Types.ObjectId;
 
   const authtoken = jwt.sign(
-    {_id: meUserid},
+    {_id: myUserid},
     config.appSecretKey,
     {expiresIn: '24 hours'}
   );
@@ -38,7 +38,7 @@ describe('POST /api/my/travels', () => {
           res.body.should.have.property('message').eql('Have a great trip to Sydney!');
           res.body.should.have.property('travel');
           validateTravelObject(res.body.travel);
-          res.body.travel.should.have.property('_userid').eql(meUserid.toString());
+          res.body.travel.should.have.property('_userid').eql(myUserid.toString());
           done();
         });
   });

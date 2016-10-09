@@ -6,11 +6,6 @@ import UserButton from './UserButton';
 
 class CreateTravel extends Component {
 
-  constructor(props) {
-    super(props);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
   handleSubmit(e) {
     e.preventDefault();
 
@@ -34,8 +29,8 @@ class CreateTravel extends Component {
     const { users, forAuthUser } = this.props;
 
     return (
-      <div className="well clearfix">
-        <form onSubmit={this.handleSubmit}>
+      <div className="well clearfix hidden-print">
+        <form onSubmit={this.handleSubmit.bind(this)}>
           {!forAuthUser ? <UserButton ref="userButton" users={users} /> : null}
           <div className="form-group pull-left" style={{width: "146px"}}>
             <input type="text" ref="inputDestination" className="form-control" placeholder="destination" />

@@ -10,6 +10,18 @@ exports.getTravels = (req, res) => {
   if (req.forUserid) {
     filter._userid = req.forUserid;
   }
+  if (req.query.fromDate) {
+    if (!filter.startDate) {
+      filter.startDate = {};
+    }
+    filter.startDate.$gte = new Date(req.query.fromDate);
+  }
+  if (req.query.tillDate) {
+    if (!filter.startDate) {
+      filter.startDate = {};
+    }
+    filter.startDate.$lt = new Date(req.query.tillDate);
+  }
   const query = Travel.find(filter).select('_id _userid destination startDate endDate comment');
   query.exec((err, travels) => {
     if (err) {
@@ -105,6 +117,12 @@ exports.updateTravel = (req, res) => {
       if (err) {
         return endWithServerError(res, 'DB failure. Failed to fetch.');
       }
+      if (req.forUserid) {
+        if (travel._userid != req.forUserid) {
+          res.status(403);
+          return res.json({message: 'Not allowed to update this travel.'});
+        }
+      }
       const updates = {};
       if (req.body.destination) {
         updates.destination = req.body.destination;
@@ -142,10 +160,24 @@ exports.updateTravel = (req, res) => {
 
 exports.deleteTravel = (req, res) => {
 
-  Travel.remove({_id: req.params.id}, (err) => {
-    if (err) {
-      return endWithServerError(res, 'DB failure.');
-    }
-    res.json({message: 'Travel successfully deleted!'});
-  });
+  Travel.findById(
+    req.params.id,
+    '_userid', (err, travel) => {
+
+      if (req.forUserid) {
+        if (travel._userid != req.forUserid) {
+          res.status(403);
+          return res.json({message: 'Not allowed to delete this travel.'});
+        }
+      }
+
+      Travel.remove({_id: req.params.id}, (err) => {
+        if (err) {
+          return endWithServerError(res, 'DB failure.');
+        }
+        res.json({message: 'Travel successfully deleted!'});
+      });
+
+    });
+
 };

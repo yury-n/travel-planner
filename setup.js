@@ -27,6 +27,7 @@ function createPermissions() {
     {role: 'admin', action: 'manageOwnTravels'},
 
     {role: 'superadmin', action: 'manageUsers'},
+    {role: 'superadmin', action: 'manageOwnTravels'},
     {role: 'superadmin', action: 'manageAnyTravels'},
   ]);
 }

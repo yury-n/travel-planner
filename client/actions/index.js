@@ -39,7 +39,7 @@ const parseResponse = (response) => {
 const getWithJSONandAuth = (url, getState) => {
   const auth = getAuthentication(getState());
   if (auth.authenticated) {
-    url += '?authtoken=' + auth.authtoken;
+    url += (url.indexOf('?') === -1 ? '?' : '&') + 'authtoken=' + auth.authtoken;
   }
   return fetch(url, {
     headers: {
@@ -48,23 +48,46 @@ const getWithJSONandAuth = (url, getState) => {
   });
 };
 
-const fetchWithJSONandAuth = (method) => {
-  return (url, params, getState) => {
-    const auth = getAuthentication(getState());
-    params.authtoken = auth.authtoken;
-    return fetch(url, {
-      method: method,
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(params)
-    });
-  };
-}
-const postWithJSONandAuth = fetchWithJSONandAuth('POST');
-const putWithJSONandAuth = fetchWithJSONandAuth('PUT');
-const deleteWithJSONandAuth = fetchWithJSONandAuth('DELETE');
+const postWithJSONandAuth = (url, params, getState) => {
+  const auth = getAuthentication(getState());
+  params.authtoken = auth.authtoken;
+  return fetch(url, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(params)
+  });
+};;
+
+const putWithJSONandAuth = (url, params, getState) => {
+  const auth = getAuthentication(getState());
+  if (auth.authenticated) {
+    url += '?authtoken=' + auth.authtoken;
+  }
+  return fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(params)
+  });
+};
+
+const deleteWithJSONandAuth = (url, getState) => {
+  const auth = getAuthentication(getState());
+  if (auth.authenticated) {
+    url += '?authtoken=' + auth.authtoken;
+  }
+  return fetch(url, {
+    method: 'DELETE',
+    headers: {
+      'Accept': 'application/json'
+    }
+  });
+};
 
 export const closeModal = () => ({
   type: CLOSE_MODAL
@@ -176,7 +199,7 @@ export const deleteUser = (userid) => (dispatch, getState) => {
   dispatch({
     type: CLOSE_MODAL
   });
-  return deleteWithJSONandAuth('/api/users/' + userid, {}, getState)
+  return deleteWithJSONandAuth('/api/users/' + userid, getState)
           .then(parseResponse).then(
             response => {
               if (response.status == 200) {
@@ -220,12 +243,21 @@ export const updateUser = (userid, password, role) => (dispatch, getState) => {
 TRAVELS
 */
 
-export const fetchTravels = (forAuthUser = false) => (dispatch, getState) => {
+export const fetchTravels = (forAuthUser = false, fromDate, tillDate) => (dispatch, getState) => {
   let url;
   if (forAuthUser) {
     url = '/api/my/travels';
   } else {
     url = '/api/travels';
+  }
+  if (fromDate || tillDate) {
+    url += '?1=1';
+    if (fromDate) {
+      url += '&fromDate=' + fromDate;
+    }
+    if (tillDate) {
+      url += '&tillDate=' + tillDate;
+    }
   }
   return getWithJSONandAuth(url, getState).then(parseResponse).then(
     response => {
@@ -285,7 +317,7 @@ export const deleteTravel = (travelid) => (dispatch, getState) => {
   dispatch({
     type: CLOSE_MODAL
   });
-  return deleteWithJSONandAuth('/api/travels/' + travelid, {}, getState)
+  return deleteWithJSONandAuth('/api/travels/' + travelid, getState)
           .then(parseResponse).then(
             response => {
               if (response.status == 200) {

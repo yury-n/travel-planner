@@ -17,6 +17,7 @@ module.exports = (action) => {
       if (!isPermitted) {
         res.status(403);
         res.json({message: 'Action is not permitted.'});
+        // res.json({message: 'Action ' + action + ' is not permitted for role ' + req.authenticatedUser.role + '.'});
         return next();
       }
       return next();

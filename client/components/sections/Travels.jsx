@@ -7,6 +7,7 @@ import DeleteTravelModal from './Travels/modals/DeleteModal';
 import EditTravelModal from './Travels/modals/EditModal';
 import Message from '../Message';
 import TravelsTable from './Travels/TravelsTable';
+import FilterTravels from './Travels/FilterTravels';
 
 class Travels extends Component {
 
@@ -37,6 +38,7 @@ class Travels extends Component {
         {messageComponent}
         <CreateTravel forAuthUser={forAuthUser} />
         <TravelsTable forAuthUser={forAuthUser} />
+        <FilterTravels forAuthUser={forAuthUser} />
         {modalComponent}
       </div>
     );

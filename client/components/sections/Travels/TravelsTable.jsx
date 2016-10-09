@@ -30,7 +30,7 @@ class TravelsTable extends Component {
             <th>End Date</th>
             <th>Days till start</th>
             <th>Comment</th>
-            <th></th>
+            <th className="hidden-print"></th>
           </tr>
         </thead>
         <tbody>
@@ -38,13 +38,13 @@ class TravelsTable extends Component {
             return (
               <tr key={index}>
                 <td><strong>{index + 1}</strong></td>
-                {!forAuthUser ? <td>{travel.username}</td> : null}                
+                {!forAuthUser ? <td>{travel.username}</td> : null}
                 <td>{travel.destination}</td>
                 <td>{travel.startDate}</td>
                 <td>{travel.endDate}</td>
                 <td>{this.getDaysTillStart(travel.startDate)}</td>
                 <td>{travel.comment}</td>
-                <td className="text-right">
+                <td className="text-right hidden-print">
                   <button type="button"
                           className="btn btn-default"
                           onClick={() => this.props.openEditTravelModal(travel._id, travel.destination, travel.startDate, travel.endDate, travel.comment)}>
@@ -71,7 +71,9 @@ const mapStateToProp = (state) => {
   const travels = getTravels(state);
   return {
     travels: travels.list.map(travel => {
-      return {...travel, username: getUserById(users, travel._userid).name};
+      const user = getUserById(users, travel._userid);
+      const username = user ? user.name : '';
+      return {...travel, username};
     })
   }
 };
