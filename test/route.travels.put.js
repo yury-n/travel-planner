@@ -60,4 +60,25 @@ describe('PUT /api/travels/:id', () => {
         });
   });
 
+  it('should return 404 on attempt to update nonexistent travel', (done) => {
+    const travel = new Travel({
+      _userid: new mongoose.Types.ObjectId,
+      destination: 'Boston',
+      startDate: new Date('2014-11-01'),
+      endDate: new Date('2014-11-12'),
+      comment: 'this is something old'
+    });
+    travel.save().then(() => {
+      chai.request(server)
+          .put('/api/travels/' + new mongoose.Types.ObjectId)
+          .send({
+            destination: 'Los Angeles'
+          })
+          .end((err, res) => {
+            res.should.have.status(404);
+            done();
+          });
+    });
+  });
+
 });

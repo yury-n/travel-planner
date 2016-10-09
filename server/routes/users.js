@@ -6,6 +6,7 @@ const config = require('config');
 const validatePresenceOfFields = require('../utils/validatePresenceOfFields');
 const endWithServerError = require('../utils/endWithServerError');
 const User = require('../models/user');
+const Travel = require('../models/travel');
 
 exports.getUsers = (req, res) => {
 
@@ -83,12 +84,26 @@ exports.createUser = (req, res) => {
 
 exports.deleteUser = (req, res) => {
 
-  User.remove({_id: req.params.id}, (err) => {
-    if (err) {
-      return endWithServerError(res, 'DB failure.');
+  User.findById(req.params.id, '_id', (err, user) => {
+
+    if (!user) {
+      res.status(404);
+      return res.json({message: 'User not found.'});
     }
-    res.json({message: 'User successfully deleted!'});
+
+    User.remove({_id: req.params.id}, (err) => {
+      if (err) {
+        return endWithServerError(res, 'DB failure.');
+      }
+      Travel.remove({_userid: req.params.id}, (err) => {
+        if (err) {
+          return endWithServerError(res, 'DB failure.');
+        }
+        res.json({message: 'User successfully deleted!'});
+      });
+    });
   });
+
 };
 
 exports.updateUser = (req, res) => {
@@ -99,6 +114,10 @@ exports.updateUser = (req, res) => {
   User.findById(req.params.id, 'name, role, password', (err, user) => {
     if (err) {
       return endWithServerError(res, 'DB failure.');
+    }
+    if (!user) {
+      res.status(404);
+      return res.json({message: 'User not found.'});
     }
     const updates = {};
     if (req.body.name) {

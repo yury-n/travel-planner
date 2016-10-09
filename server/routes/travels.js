@@ -44,9 +44,9 @@ exports.getTravel = (req, res) => {
     if (err) {
       return endWithServerError(res, 'DB failure.');
     }
-    travel.startDate = getISODateWithoutTime(travel.startDate);
-    travel.endDate = getISODateWithoutTime(travel.endDate);
     if (travel) {
+      travel.startDate = getISODateWithoutTime(travel.startDate);
+      travel.endDate = getISODateWithoutTime(travel.endDate);
       res.json(travel);
     } else {
       res.status(404);
@@ -117,6 +117,10 @@ exports.updateTravel = (req, res) => {
       if (err) {
         return endWithServerError(res, 'DB failure. Failed to fetch.');
       }
+      if (!travel) {
+        res.status(404);
+        return res.json({message: 'Travel not found.'});
+      }
       if (req.forUserid) {
         if (travel._userid != req.forUserid) {
           res.status(403);
@@ -163,6 +167,11 @@ exports.deleteTravel = (req, res) => {
   Travel.findById(
     req.params.id,
     '_userid', (err, travel) => {
+
+      if (!travel) {
+        res.status(404);
+        return res.json({message: 'Travel not found.'});
+      }
 
       if (req.forUserid) {
         if (travel._userid != req.forUserid) {

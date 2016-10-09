@@ -33,4 +33,21 @@ describe('DELETE /api/travels/:id', () => {
     });
   });
 
+  it('should return 404 on attempt to delete nonexistent travel', (done) => {
+    const travel = new Travel({
+      _userid: new mongoose.Types.ObjectId,
+      destination: 'Moscow',
+      startDate: new Date('2014-11-01'),
+      endDate: new Date('2014-11-12')
+    });
+    travel.save().then(() => {
+      chai.request(server)
+          .delete('/api/travels/' + new mongoose.Types.ObjectId)
+          .end((err, res) => {
+            res.should.have.status(404);
+            done();
+          });
+    });
+  });
+
 });
