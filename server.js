@@ -50,7 +50,6 @@ const apiUsersRouter = express.Router();
 apiUsersRouter.get('/', usersRoutes.getUsers);
 apiUsersRouter.get('/:id', usersRoutes.getUser);
 if (process.env.NODE_ENV != 'test') {
-  apiUsersRouter.post('/', authorizeTo('manageUsers'));
   apiUsersRouter.put('/:id', authorizeTo('manageUsers'));
   apiUsersRouter.delete('/:id', authorizeTo('manageUsers'));
 }
