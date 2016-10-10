@@ -37,12 +37,15 @@ const parseResponse = (response) => {
 };
 
 const getJSONHeadersWithAuth = (getState) => {
-  const auth = getAuthentication(getState());
-  return {
+  const headers = {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
-    'x-access-token': auth.authtoken
   };
+  const auth = getAuthentication(getState());
+  if (auth.authtoken) {
+    headers['x-access-token'] = auth.authtoken;
+  }
+  return headers;
 }
 
 const getWithJSONandAuth = (url, getState) =>
