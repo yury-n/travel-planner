@@ -47,13 +47,13 @@ class TravelsTable extends Component {
                 <td className="text-right hidden-print">
                   <button type="button"
                           className="btn btn-default"
-                          onClick={() => this.props.openEditTravelModal(travel._id, travel.destination, travel.startDate, travel.endDate, travel.comment)}>
+                          onClick={() => this.props.openEditTravelModal(forAuthUser, travel._id, travel.destination, travel.startDate, travel.endDate, travel.comment)}>
                     Edit
                   </button>
                   {" "}
                   <button type="button"
                           className="btn btn-danger"
-                          onClick={() => this.props.openDeleteTravelModal(travel._id, travel.destination)}>
+                          onClick={() => this.props.openDeleteTravelModal(forAuthUser, travel._id, travel.destination)}>
                     Delete
                   </button>
                 </td>

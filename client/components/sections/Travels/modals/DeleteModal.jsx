@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import Modal from '../../../Modal';
 import { deleteTravel } from '../../../../actions';
 
-const DeleteTravelModal = ({ travelid, destination, deleteTravel }) => {
+const DeleteTravelModal = ({ forAuthUser, travelid, destination, deleteTravel }) => {
   return (
-    <Modal title="Delete travel" actionName="Delete" action={() => deleteTravel(travelid)}>
+    <Modal title="Delete travel" actionName="Delete" action={() => deleteTravel(forAuthUser, travelid)}>
       Are you sure you want to delete this travel to <strong>{destination}</strong>?
     </Modal>
   );

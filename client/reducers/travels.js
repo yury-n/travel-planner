@@ -47,6 +47,7 @@ const travels = (state, action) => {
         ...state,
         modal: {
           type: 'delete',
+          forAuthUser: action.forAuthUser,
           travelid: action.travelid,
           destination: action.destination
         }
@@ -63,6 +64,7 @@ const travels = (state, action) => {
         ...state,
         modal: {
           type: 'edit',
+          forAuthUser: action.forAuthUser,
           travelid: action.travelid,
           destination: action.destination,
           startDate: action.startDate,

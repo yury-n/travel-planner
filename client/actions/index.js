@@ -291,17 +291,24 @@ export const createTravel = (forAuthUser, destination, startDate, endDate, comme
   )
 };
 
-export const openDeleteTravelModal = (travelid, destination) => ({
+export const openDeleteTravelModal = (forAuthUser, travelid, destination) => ({
   type: TRAVELS_OPEN_DELETE_MODAL,
+  forAuthUser,
   travelid,
   destination
 });
 
-export const deleteTravel = (travelid) => (dispatch, getState) => {
+export const deleteTravel = (forAuthUser, travelid) => (dispatch, getState) => {
   dispatch({
     type: CLOSE_MODAL
   });
-  return deleteWithJSONandAuth('/api/travels/' + travelid, getState)
+  let url;
+  if (forAuthUser) {
+    url = '/api/my/travels';
+  } else {
+    url = '/api/travels';
+  }
+  return deleteWithJSONandAuth(url + '/' + travelid, getState)
           .then(parseResponse).then(
             response => {
               if (response.status == 200) {
@@ -315,8 +322,9 @@ export const deleteTravel = (travelid) => (dispatch, getState) => {
           );
 };
 
-export const openEditTravelModal = (travelid, destination, startDate, endDate, comment) => ({
+export const openEditTravelModal = (forAuthUser, travelid, destination, startDate, endDate, comment) => ({
   type: TRAVELS_OPEN_EDIT_MODAL,
+  forAuthUser,
   travelid,
   destination,
   startDate,
@@ -324,11 +332,17 @@ export const openEditTravelModal = (travelid, destination, startDate, endDate, c
   comment
 });
 
-export const updateTravel = (travelid, destination, startDate, endDate, comment) => (dispatch, getState) => {
+export const updateTravel = (forAuthUser, travelid, destination, startDate, endDate, comment) => (dispatch, getState) => {
   dispatch({
     type: CLOSE_MODAL
   });
-  return putWithJSONandAuth('/api/travels/' + travelid, {destination, startDate, endDate, comment}, getState)
+  let url;
+  if (forAuthUser) {
+    url = '/api/my/travels';
+  } else {
+    url = '/api/travels';
+  }
+  return putWithJSONandAuth(url + '/' + travelid, {destination, startDate, endDate, comment}, getState)
           .then(parseResponse).then(
             response => {
               if (response.status == 200) {

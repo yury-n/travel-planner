@@ -17,11 +17,11 @@ class EditTravelModal extends Component {
   }
 
   render() {
-    const { travelid, updateTravel } = this.props;
+    const { travelid, updateTravel, forAuthUser } = this.props;
     const { destination, startDate, endDate, comment } = this.state;
     return (
       <Modal title="Edit travel" actionName="Update" action={() => updateTravel(
-          travelid, destination, startDate, endDate, comment
+          forAuthUser, travelid, destination, startDate, endDate, comment
         )}>
         <p>
           Edit travel attributes.
